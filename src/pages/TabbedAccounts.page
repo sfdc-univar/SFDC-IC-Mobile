@@ -37,6 +37,7 @@ window.sfdcPage = new DetailPage("{!account.id}");
       <apex:tab label="Details" name="AccDetails" id="AccDetails">
     <!---------------------- begin detail table ---------------------------------------------->    
  <apex:form >
+
         <apex:pageblock mode="maindetail" title="{!$ObjectType.Account.label} Detail">
             <apex:pageblockbuttons location="top" >
                 <apex:commandbutton value="Edit" action="{!Edit}"/>
@@ -44,8 +45,9 @@ window.sfdcPage = new DetailPage("{!account.id}");
                 <input value="Sharing"  class="btn" title="Sharing" name="share" onclick="navigateToUrl('/p/share/AccSharingDetail?parentId={!account.id}','DETAIL','share');" type="button" />
                 <apex:commandbutton value="Include Offline" action="{!URLFOR($Action.Account.IncludeOffline,Account.id)}"/>
                 <input type="button" onclick="navigateToUrl('/apex/Account_Merge?searchText={!URLENCODE(account.name)}','DETAIL','offline');" name="merge_accounts" title="Merge Accounts" class="btn" value="Merge Accounts" />
-
-                <!-- *************** Uncomment as needed *************** -->
+              <input name="insitucah__view_hierarchy" title="View Hierarchy" class="btn" onclick="navigateToUrl('https://InSituCah.cs7.visual.force.com/apex/InSitu_Account_Hierarchy?scontrolCaching=1&id={!account.id}','DETAIL');" type="button" value="View Hierarchy"/>
+              
+                 <!-- *************** Uncomment as needed *************** -->
                     <!-- <apex:commandbutton value="Clone" action="{!URLFOR($Action.Account.Clone,Account.id)}"/> -->
                     <!-- <apex:commandbutton value="Convert" action="{!URLFOR($Action.Account.Convert,Account.id)}"/> -->
                     <!-- <apex:commandbutton value="Find Duplicates" action="{!URLFOR($Action.Account.FindDup,Account.id)}"/> -->
@@ -57,16 +59,20 @@ window.sfdcPage = new DetailPage("{!account.id}");
             </apex:pageblockbuttons>
     
     <!-- ********** Output Panel for Record Type : Ship To **********  -->
-            <apex:outputpanel rendered="{!Account.RecordTypeId='0123000000004t8AAA'}">
-                <apex:pageblocksection title="Account Information" showheader="false" collapsible="false" columns="2">
+            <apex:outputpanel rendered="{!Account.RecordTypeId='0123000000004t8AAA'}" id="shipto">
+             <apex:pageMessage summary="This Account is owned by the MUNI Team" severity="info" strength="1" rendered="{!Account.Muni_Team_Account__c}" />
+                <apex:pageblocksection title="Account Information" showheader="false" id="acctinfo" collapsible="false" columns="2">
                     <apex:outputfield value="{!Account.CustomerShipTo__c}"/>                    
                     <!-- ** save blank space mechanism for future need <apex:pageblocksectionitem />  -->
-                    <apex:outputfield value="{!Account.SellToAccount__c}"/>
+                    <apex:outputfield value="{!Account.SellToAccount__c}"/> 
+                      
                     <apex:pageblocksectionitem >
-                        <apex:outputlabel value="Account Owner"/>
+                        <apex:outputlabel value="Account Owner"/>                        
                             <apex:outputpanel >
                             <apex:outputfield value="{!Account.OwnerId}"/>&nbsp;
-                            <apex:outputlink value="{!URLFOR($Action.Account.ChangeOwner,Account.id)}" rendered="{!NOT(ISNULL(Account.Id))}">[Change]</apex:outputlink>
+                            <apex:outputlink value="{!URLFOR($Action.Account.ChangeOwner,Account.id)}" rendered="{!NOT(Account.Muni_Team_Account__c=TRUE)}">[Change]</apex:outputlink>
+
+                           
                         </apex:outputpanel>
                     </apex:pageblocksectionitem>
 
@@ -190,12 +196,14 @@ window.sfdcPage = new DetailPage("{!account.id}");
    <apex:pageblocksection title="Account Review" id="section1" columns="2">
       <script>twistSection(document.getElementById("{!$Component.section1}").childNodes[0].childNodes[0]); </script>
       <apex:pageblocksectionitem />
-                    <apex:outputfield value="{!Account.KeyCustomers__c}"/>
-                    <apex:outputfield value="{!Account.AnnualSalesCalls__c}"/>
-                    <apex:outputfield value="{!Account.KeyCompetitors__c}"/>
-                    <apex:outputfield value="{!Account.Reviewed__c}"/>  
-                    <apex:outputfield value="{!Account.Description}"/>
-                    <apex:outputfield value="{!Account.FieldManagerComments__c}"/>                    
+      <apex:outputfield value="{!Account.KeyCustomers__c}"/>
+      <apex:outputfield value="{!Account.AnnualSalesCalls__c}"/>
+      <apex:outputfield value="{!Account.KeyCompetitors__c}"/>
+      <apex:outputfield value="{!Account.Reviewed__c}"/>  
+      <apex:outputfield value="{!Account.Description}"/>
+      <apex:outputfield value="{!Account.FieldManagerComments__c}"/>  
+      <apex:pageBlockSectionItem />
+      <apex:outputField value="{!account.AccountGrowthPlanDetails__c}"/>
     </apex:pageblockSection>
 </DIV>
 
@@ -223,9 +231,9 @@ window.sfdcPage = new DetailPage("{!account.id}");
                     <apex:outputfield value="{!Account.SICName4__c}"/>
                     <apex:outputfield value="{!Account.CreditContactPhoneNumber__c}"/>                    
                     <apex:outputfield value="{!Account.SICIndustryGroupName4__c}"/>
-                    <apex:outputfield value="{!Account.Latitude__c}"/>
+                    <apex:outputfield value="{!Account.Location__Latitude__s}"/>
                     <apex:outputfield value="{!Account.CreditRep__c}"/>
-                    <apex:outputfield value="{!Account.Longitude__c}"/>
+                    <apex:outputfield value="{!Account.Location__Longitude__s}"/>
                     <apex:outputfield value="{!Account.ConsolidatedInvoiceCode__c}"/>
                     <apex:outputfield value="{!Account.DunsNumber__c}"/>
                     <apex:outputfield value="{!Account.AnnualRevenue}"/>
@@ -237,7 +245,6 @@ window.sfdcPage = new DetailPage("{!account.id}");
                     <apex:outputfield value="{!Account.MarketingSegment__c}"/>  
                     <apex:outputfield value="{!Account.F2S_Start_Date__c}"/>
                     <apex:outputfield value="{!Account.TargetAccount__c}"/> 
-                    <apex:outputfield value="{!Account.GFSI__c}"/>  
                                       
 </apex:pageblockSection>
 </DIV>
@@ -308,7 +315,6 @@ window.sfdcPage = new DetailPage("{!account.id}");
 <apex:outputField value="{!account.CCForecastGrossMargin__c}"/>
 <apex:outputField value="{!account.ICForecastGMPercent__c}"/>
 <apex:outputField value="{!account.CCForecastGMPercent__c}"/>
-<apex:outputField value="{!account.AnnualSalesCalls__c}"/>
 </apex:pageblocksection>
 </DIV>
 
@@ -370,7 +376,7 @@ window.sfdcPage = new DetailPage("{!account.id}");
       </apex:tab>
  
       <apex:tab label="Sample Requests" name="tabSamples" id="tabSamples">
-         <apex:relatedList subject="{!account}" list="R00N30000000jjAZEAY__r" id="SampleRequestRelatedList" rendered="{!$ObjectType.SampleRequest__c.accessible}"  />
+         <apex:relatedList subject="{!account}" list="R00N30000000jjAZEAY" id="SampleRequestRelatedList" rendered="{!$ObjectType.SampleRequest__c.accessible}"  />
       </apex:tab>
       
       <apex:tab label="Waste Streams" name="tabCC" id="tabCC">

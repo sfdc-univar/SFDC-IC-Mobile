@@ -51,39 +51,25 @@
               }
           
          }
-         function formatCurrency(num) {
-				sign = (num == (num = Math.abs(num)));
-				num = Math.floor(num*100+0.50000000001);
-				cents = num%100;
-				num = Math.floor(num/100).toString();
-					if(cents<10){
-					cents = "0" + cents;
-					}
-						for (var i = 0; i < Math.floor((num.length-(1+i))/3); i++){
-						num = num.substring(0,num.length-(4*i+3))+','+
-						num.substring(num.length-(4*i+3));
-						}
-						return (((sign)?'':'-') + num + '.' + cents);
-		 }
-    	 function getImage(recType,recHA,recUser,contUser){
-    	 var recContext = false;
-    	    //check for house account - HA
-    	    var posHA = recHA.indexOf("HA");
-    	    if(recUser == contUser){
-    	    	//account owner is the same as the context user
-    	    	recContext = true;
-    	    }
-    	    if(posHA != -1){
-    	    image = 'http://maps.google.com/mapfiles/marker_whiteH.png';
-    	    } else if(recType == 'Prospect' && recContext){
-    	   	image = 'https://maps.google.com/mapfiles/marker.png';
-    	 	} else if(recType == 'ShipTo' && recContext){
-    	 	image = 'http://maps.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png';
-    	 	} else if(!recContext){
-    	 	image = 'http://maps.google.com/mapfiles/marker_yellow.png';
-    	 	}
-    	 	return image;
-    	 }
+         function getImage(recType,recHA,recUser,contUser){
+         var recContext = false;
+            //check for house account - HA
+            var posHA = recHA.indexOf("HA");
+            if(recUser == contUser){
+                //account owner is the same as the context user
+                recContext = true;
+            }
+            if(posHA != -1){
+            image = 'http://maps.google.com/mapfiles/marker_whiteH.png';
+            } else if(recType == 'Prospect' && recContext){
+            image = 'https://maps.google.com/mapfiles/marker.png';
+            } else if(recType == 'ShipTo' && recContext){
+            image = 'http://maps.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png';
+            } else if(!recContext){
+            image = 'http://maps.google.com/mapfiles/marker_yellow.png';
+            }
+            return image;
+         }
          function createMap(lat, lon, warehouses){
             // Get the map div, and center the map at the proper geolocation
             var currentPosition = new google.maps.LatLng(lat,lon);
@@ -132,64 +118,63 @@
                     OpptyRelNavUrl = '\\' + warehouse.Id;
                 }
                 */
-				//Link to account
+                //Link to account
                  try{
-   					 if(sforce.one){
-    					warehouseNavUrl ='javascript:sforce.one.navigateToSObject(\'' + warehouse.Id + '\')';
-    				}
+                     if(sforce.one){
+                        warehouseNavUrl ='javascript:sforce.one.navigateToSObject(\'' + warehouse.Id + '\')';
+    }
                 } catch(err) {
                     console.log(err);
                     warehouseNavUrl = '\\' + warehouse.Id;
                 }
                 
                 //remove undefined values from results
-                var warehousePhone = ' Phone: ' + warehouse.ShippingPhone__c + '<br/>';
-                	if(warehouse.ShippingPhone__c == null || warehouse.ShippingPhone__c == 'undefined'){
-                	warehousePhone = ' ';
-                	} 
-                var warehouseStreet =  warehouse.ShippingStreet + ', ';
-                	if(warehouse.ShippingStreet  == null || warehouse.ShippingStreet  == 'undefined'){
-                	warehouseStreet = ' ';
-                	}
+                var warehousePhone = warehouse.ShippingPhone__c;
+                    if(warehousePhone == null){
+                    warehousePhone = ' ';
+                    } 
+                var warehouseStreet =  warehouse.ShippingStreet;
+                    if(warehouseStreet == null){
+                    warehouseStreet = ' ';
+                    }
                 var warehouseCity =  warehouse.ShippingCity + '<br/> ';
-                	if(warehouse.ShippingCity == null || warehouse.ShippingCity == 'undefined'){
-                	warehouseCity = ' ';
-                	}	
-               //var warehouseOppty = '<a href="\\apex/Related_Opportunities?start=' + warehouse.Id +'"># of Opportunities: ' + warehouse.Total_Open_Opportunities__c + '</a><br/> ';
-               var warehouseOppty = ' # of Opportunities: ' + warehouse.Total_Open_Opportunities__c + '<br/> ';
-                	console.log(warehouseOppty);
-                   	if(warehouse.Total_Open_Opportunities__c == 0){
-                	warehouseOppty = ' # of Opportunities: 0' + '<br/>';
-                	} 
-                var warehouseRolling12 =  'Rolling 12 mo Sales: $' + formatCurrency(warehouse.AcornRolling12MoSales__c) + '<br/>';
-                   	if(warehouse.AcornRolling12MoSales__c == null ){
-                	warehouseRolling12 = 'Rolling 12 mo Sales: $0.00' + '<br/>';
-                	}	
-                var warehouseSalesOffice = 'Sales Office: ' + warehouse.SalesOfficeName__c + '<br/>';
-                	if(warehouse.SalesOfficeName__c == null || warehouse.SalesOfficeName__c == 'undefined' || warehouse.SalesOfficeName__c == ''){
-                	warehouseSalesOffice = ' ';
-                   	}
-                var warehouseIndustry = 'Industry: ' + warehouse.SICIndustryGroupName4__c + '<br/>';
-                	if(warehouse.SICIndustryGroupName4__c == null || warehouse.SICIndustryGroupName4__c == 'undefined'){
-                	warehouseIndustry = ' ';
-                	}  
+                    if(warehouseCity == null){
+                    warehouseCity = ' ';
+                    }   
+               //var warehouseOppty = '<a href="\\apex/Related_Opportunities?start=' + warehouse.Id +'"># of Opportunities: ' + warehouse.Total_Count_Opportunities__c + '</a><br/> ';
+               var warehouseOppty = '# of Opportunities: ' + warehouse.Total_Count_Opportunities__c + '<br/> ';
+                    console.log(warehouseOppty);
+                    if(warehouse.Total_Count_Opportunities__c == 0){
+                    warehouseOppty = ' ';
+                    } 
+                var warehouseRolling12 =  'Rolling 12 mo Sales: ' + warehouse.Rolling12MonthSales__c + '<br/>';
+                    if(warehouse.Rolling12MonthSales__c == null){
+                    warehouseRolling12 = ' ';
+                    }   
+                var warehouseSalesOffice = 'Sales Office: ' + warehouse.SalesOfficeName__c;
+                    if(warehouse.SalesOfficeName__c == null){
+                    warehouseSalesOffice = ' ';
+                    }
+                var warehouseIndustry = 'Industry: ' + warehouse.Industry + '<br/>';
+                    if(warehouse.Industry == null){
+                    warehouseIndustry = ' ';
+                    }  
                 var wareDate = new Date(warehouse.LastActivityDate);
                 var warehouseActivity = 'Last Activity: ' + wareDate.toDateString() + '<br/>';
-                	if(wareDate == null || wareDate == 'Invalid Date'){
-                	warehouseActivity = ' Last Activity: N/A <br/>';
-                	}	
+                    if(warehouse.LastActivityDate == null){
+                    warehouseActivity = ' ';
+                    }   
                 var warehouseDetails = 
                     '<a href="' + warehouseNavUrl + '">' + 
-                    warehouse.Name + ' - ' + warehouse.RecordType.DeveloperName  + '</a><br/>' + 
-                    'Owner: ' + warehouse.OwnerLink__r.Name + '<br/>' + 
-                    warehousePhone +
-                    warehouseStreet + ' ' + warehouseCity + 
-                    warehouseSalesOffice + 
-                    warehouseIndustry  +
-                    warehouseOppty + 
-                    warehouseRolling12 + 
-                    warehouseActivity  
-
+                    warehouse.Name + '</a><br/>' + 
+                    warehouse.OwnerLink__r.Name + ' ' + warehousePhone + '<br/>' +
+                    warehouse.RecordType.DeveloperName + 
+                    warehouseOppty + ' ' + warehouseRolling12  + '<br/>' + 
+                    warehouseSalesOffice + ' ' + warehouseIndustry  +
+                    warehouseActivity + 
+               //     '<a href="\\apex/FindDirections?start=' + lat +', ' + lon + '&end=' +
+                //    warehouse.Location__Latitude__s + ', ' + warehouse.Location__Longitude__s +  //'">' + 
+                    warehouseStreet + ' ' + warehouseCity //+ '</a>'; 
                
                // Create the information that will pop up on the marker     
                var infowindow = new google.maps.InfoWindow({ 

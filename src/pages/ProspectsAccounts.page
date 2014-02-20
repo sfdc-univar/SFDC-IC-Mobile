@@ -81,7 +81,7 @@ new TagMenuButton('tagsMru', '/_ui/common/html/tag/TagsMRUServlet');
                         <apex:outputpanel >
                             <apex:outputfield value="{!Account.BillingStreet}"/><br/>
                             <apex:outputfield value="{!Account.BillingCity}"/>&nbsp;&nbsp;
-                            <apex:outputfield value="{!Account.BillingStateCode}"/>&nbsp;&nbsp;&nbsp;
+                            <apex:outputfield value="{!Account.BillingState}"/>&nbsp;&nbsp;&nbsp;
                             <apex:outputfield value="{!Account.BillingPostalCode}"/><br/>
                             <apex:outputfield value="{!Account.BillingCountryCode}"/>
                         </apex:outputpanel>
@@ -91,7 +91,7 @@ new TagMenuButton('tagsMru', '/_ui/common/html/tag/TagsMRUServlet');
                         <apex:outputpanel >
                             <apex:outputfield value="{!Account.ShippingStreet}"/><br/>
                             <apex:outputfield value="{!Account.ShippingCity}"/>&nbsp;&nbsp;
-                            <apex:outputfield value="{!Account.ShippingStateCode}"/>&nbsp;&nbsp;&nbsp;
+                            <apex:outputfield value="{!Account.ShippingState}"/>&nbsp;&nbsp;&nbsp;
                             <apex:outputfield value="{!Account.ShippingPostalCode}"/><br/>
                             <apex:outputfield value="{!Account.ShippingCountryCode}"/>
                         </apex:outputpanel>
@@ -169,6 +169,8 @@ new TagMenuButton('tagsMru', '/_ui/common/html/tag/TagsMRUServlet');
                     <apex:outputfield value="{!Account.ManagerCPPReview__c}"/>
                     <apex:outputfield value="{!Account.ChemCareQualified__c}"/>                    
                     <apex:outputfield value="{!Account.Manager_ChemCare_Approval__c}"/>
+                    <apex:pageBlockSectionItem />
+                    <apex:outputField value="{!account.AccountGrowthPlanDetails__c}"/>
     </apex:pageblockSection>
 </DIV>
 
@@ -191,9 +193,9 @@ new TagMenuButton('tagsMru', '/_ui/common/html/tag/TagsMRUServlet');
                     <apex:outputfield value="{!Account.MarketingSegment__c}"/>
                     <apex:outputfield value="{!Account.F2S_Start_Date__c}"/> 
                     <apex:outputfield value="{!Account.TargetAccount__c}"/>   
-                    <apex:outputfield value="{!Account.Latitude__c}"/>
+                    <apex:outputfield value="{!Account.Location__Latitude__s}"/>
                     <apex:pageBlockSectionItem />
-                    <apex:outputfield value="{!Account.Longitude__c}"/>
+                   <apex:outputfield value="{!Account.Location__Longitude__s}"/>
                     <apex:outputfield value="{!Account.SIC_Mapping__c}"/>
                     <apex:outputfield value="{!Account.UIC_Industry_Group__c}"/>
                     <apex:outputField value="{!Account.SICName1__c}"/>
@@ -202,14 +204,6 @@ new TagMenuButton('tagsMru', '/_ui/common/html/tag/TagsMRUServlet');
                     <apex:outputField value="{!Account.SICIndustryGroupCode4__c}"/>
                     <apex:outputfield value="{!Account.GFSI__c}"/> 
     </apex:pageblockSection>
-</DIV>
-     
-<!-- Account Plan section -->
-<DIV class="pbSubsection">
-<apex:pageblocksection title="Account Growth Plan Details" id="section3" columns="1">
- <script>twistSection(document.getElementById("{!$Component.section3}").childNodes[0].childNodes[0]); </script>
-<apex:outputField value="{!account.AccountGrowthPlanDetails__c}"/>
-</apex:pageblocksection>
 </DIV>
 
 <DIV class="pbSubsection">
@@ -273,7 +267,7 @@ new TagMenuButton('tagsMru', '/_ui/common/html/tag/TagsMRUServlet');
       </apex:tab>
  
       <apex:tab label="Sample Requests" name="Sample Requests" id="tabSamples">
-         <apex:relatedList subject="{!account}" list="R00N30000000jjAZEAY__r" id="SampleRequestRelatedList" rendered="{!$ObjectType.SampleRequest__c.accessible}"  />
+         <apex:relatedList subject="{!account}" list="R00N30000000jjAZEAY" id="SampleRequestRelatedList" rendered="{!$ObjectType.SampleRequest__c.accessible}"  />
       </apex:tab>
       
        <apex:tab label="Waste Streams" name="ChemCare" id="tabCC">

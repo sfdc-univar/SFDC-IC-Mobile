@@ -17,8 +17,8 @@
 window.sfdcPage = new DetailPage("{!account.id}");
   var rkjq$ = jQuery.noConflict();
         if(jQuery) {
-        jQuery.noConflict();
-        }
+		jQuery.noConflict();
+		}
 </script>
   
   <apex:sectionHeader title="{!Account.name} - {!Account.RecordType.Name}" help="/help/doc/user_ed.jsp" id="AccountHeader" printURL="/{!account.id}/p"/> 
@@ -153,8 +153,8 @@ new TagMenuButton('tagsMru', '/_ui/common/html/tag/TagsMRUServlet');
                     <apex:outputfield value="{!Account.BuyingBehavior__c}"/>
                     <apex:outputfield value="{!Account.ProfitabilitySegment__c}"/>
                     <apex:outputfield value="{!Account.MarketingSegment__c}"/>
-                    <apex:outputfield value="{!Account.Latitude__c}"/>
-                    <apex:outputfield value="{!Account.Longitude__c}"/>
+                   <apex:outputfield value="{!Account.Location__Longitude__s}"/>
+                   <apex:outputfield value="{!Account.Location__Latitude__s}"/>
     </apex:pageblockSection>
 </DIV>
 </apex:pageBlock>
@@ -200,7 +200,7 @@ new TagMenuButton('tagsMru', '/_ui/common/html/tag/TagsMRUServlet');
       </apex:tab>
  
       <apex:tab label="Sample Requests" name="Sample Requests" id="tabSamples">
-         <apex:relatedList subject="{!account}" list="R00N30000000jjAZEAY__r" id="SampleRequestRelatedList" rendered="{!$ObjectType.SampleRequest__c.accessible}"  />
+         <apex:relatedList subject="{!account}" list="R00N30000000jjAZEAY" id="SampleRequestRelatedList" rendered="{!$ObjectType.SampleRequest__c.accessible}"  />
       </apex:tab>
       
        <apex:tab label="Notes and Attachments" name="Notes and Attachments" id="tabatttachments">
