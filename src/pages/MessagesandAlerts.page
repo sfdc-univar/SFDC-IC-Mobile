@@ -1,0 +1,24 @@
+<apex:page showHeader="false" sidebar="false" docType="html" controller="showMessagesAndAlerts" >
+
+<style>
+.pbBody
+{
+   background-color:#CCEEFF;
+}
+</style>
+<script type="text/javascript">
+function getmDivSize(){
+var mDiv = document.getElementById('mDiv');
+var mLSize = mDiv.offsetHeight;
+parent.postMessage('iframe~'+mLSize,'*');
+}
+</script>
+
+<body class="pbBody" id="pBody" onLoad="getmDivSize();">
+<div id="mDiv">
+<apex:repeat value="{!messageText}" var="m" id="mtext" rows="1">
+<apex:outputText escape="false" value="{!m}"/>
+</apex:repeat>
+</div>
+</body>
+ </apex:page>

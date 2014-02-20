@@ -1,0 +1,287 @@
+<apex:page standardController="Account" tabStyle="Account">
+<!-- Include javascript library to add reliable tooltips to the help icons -->
+<script type="text/javascript" src="{!$Resource.wztooltipjs}"></script>
+<style>
+.labelCol {align:left; font-weight:bold; font-size:8pt}
+.labelRow {align:right; font-weight:bold; font-size:8pt}
+.tableCat {align:left; font-weight:bold; font-size:10pt}
+</style>
+
+<!-- Table to host the customer report link -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="5%">&nbsp;</td>
+    <td >Information as of: <apex:outputField value="{!Account.SalesAsOf__c}"/></td>
+        <td ><apex:outputLink value="http://WCAS179/ReportServer/Pages/ReportViewer.aspx?%2fIC+Operations%2fIC+Customer+Detail+-+SFDC+CP&Customer={!Account.CustomerShipTo__c}" target="_blank">CYM Customer Product Detail Report</apex:outputLink>&nbsp;<apex:image url="/s.gif" styleClass="helpIcon" onmouseover="Tip('Current Year Month as of {!Account.SalesAsOfHidden__c}')" onmouseout="UnTip()"/></td>
+    <td >
+    <apex:outputLink value="http://WCAS179/ReportServer/Pages/ReportViewer.aspx?%2fIC+Operations%2fIC+Customer+Detail+-+SFDC+YTD&Customer={!Account.CustomerShipTo__c}" target="_blank">CYTD Customer Product Detail Report</apex:outputLink>&nbsp;<apex:image url="/s.gif" styleClass="helpIcon" onmouseover="Tip('Current Year to Date as of {!Account.SalesAsOfHidden__c}')" onmouseout="UnTip()"/></td>
+
+  </tr>  
+</table>
+<p/>
+
+<!-- Table to host the Key Metrics account profitability summary data -->
+<apex:outputLabel styleClass="tableCat">Key Metrics</apex:outputLabel><br/>
+
+<table width="100%" BORDER="1" RULES="ALL" FRAME="VOID" BORDERCOLOR="#0099cc" cellspacing="0" cellpadding="0">
+
+  <tr>
+  
+        <td colspan="2">&nbsp;</td>
+
+    <td width="19%"><apex:outputLabel styleclass="labelCol">Current Year Month</apex:outputLabel></td>
+
+    <td width="19%"><apex:outputLabel styleclass="labelCol">Prior Year Month</apex:outputLabel></td>
+
+    <td width="19%"><apex:outputLabel styleclass="labelCol">Current YTD</apex:outputLabel></td>
+
+    <td width="10%"><apex:outputLabel styleclass="labelCol">Prior YTD</apex:outputLabel></td>
+
+  </tr>
+  <tr>
+
+    <td><div align="right"><apex:outputLabel styleclass="labelRow">Total Sales</apex:outputLabel></div></td>
+
+    <td>&nbsp;</td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTotSalesYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTotSalesPYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTotSalesYTD__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTotSalesPYTD__c}"/></div></td>
+
+  </tr>
+  
+<tr>
+
+    <td><div align="right"><apex:outputLabel styleclass="labelRow">Raw GM</apex:outputLabel></div></td>
+
+    <td>&nbsp;<apex:image url="/s.gif" styleClass="helpIcon" onmouseover="Tip('Sales minus Cost of Sales')" onmouseout="UnTip()"/>&nbsp;</td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornRawGMYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornRawGMPYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornRawGMYTD__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornRawGMPYTD__c}"/></div></td>
+
+  </tr>
+
+<tr>
+
+    <td><div align="right"><apex:outputLabel styleclass="labelRow">ECM (Economic Contribution Margin)</apex:outputLabel></div></td>
+
+    <td>&nbsp;<apex:image url="/s.gif" styleClass="helpIcon" onmouseover="Tip('Economic Gross Margin (EGM) minus Variable Ops Expenses (Fulfillment & Sales & Marketing)')" onmouseout="UnTip()"/>&nbsp;</td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornECMYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornECMPYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornECMYTD__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornECMPYTD__c}"/></div></td>
+
+  </tr>
+
+</table>
+<br/>
+<!-- Table to host the Key Metrics account profitability summary data -->
+<apex:outputLabel styleClass="tableCat">Key Levers and Other Metrics</apex:outputLabel>
+<table width="100%" BORDER="1" RULES="ALL" FRAME="VOID" BORDERCOLOR="#0099cc" cellspacing="0" cellpadding="0">
+
+  <tr>
+  
+    <td colspan="2">&nbsp;</td>
+
+    <td width="19%"><apex:outputLabel styleclass="labelCol">Current Year Month</apex:outputLabel></td>
+
+    <td width="19%"><apex:outputLabel styleclass="labelCol">Prior Year Month</apex:outputLabel></td>
+
+    <td width="19%"><apex:outputLabel styleclass="labelCol">Current YTD</apex:outputLabel></td>
+
+    <td width="10%"><apex:outputLabel styleclass="labelCol">Prior YTD</apex:outputLabel></td>
+
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><apex:outputLabel styleclass="labelRow"># of Orders</apex:outputLabel></div></td>
+
+    <td>&nbsp;</td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornNumOrdersYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornNumOrdersPYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornNumOrdersYTD__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornNumOrdersPYTD__c}"/></div></td>
+
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><apex:outputLabel styleclass="labelRow">Total Pounds</apex:outputLabel></div></td>
+
+    <td>&nbsp;</td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTotPoundsYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTotPoundsPYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTotPoundsYTD__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTotPoundsPYTD__c}"/></div></td>
+
+  </tr>
+  
+  <tr>
+
+    <td><div align="right"><apex:outputLabel styleclass="labelRow">Transportation Expense</apex:outputLabel></div></td>
+
+    <td>&nbsp;</td>
+    
+    <td><div align="left"><apex:outputField value="{!Account.AcornTranspExpYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTranspExpPYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTranspExpYTD__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTranspExpPYTD__c}"/></div></td>
+
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><apex:outputLabel styleclass="labelRow">Total GM Adjustments</apex:outputLabel></div></td>
+
+    <td>&nbsp;<apex:image url="/s.gif" styleClass="helpIcon" onmouseover="Tip('Outbound Freight, Tank Farm Adjustments, Corporate Staff GM Adjustments, Other Gross Profit Adj, Product Funding')" onmouseout="UnTip()"/>&nbsp;</td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTotGMAdjYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTotGMAdjPYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTotGMAdjYTD__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornTotGMAdjPYTD__c}"/></div></td>
+
+  </tr>
+  
+  <tr>
+
+    <td><div align="right"><apex:outputLabel styleclass="labelRow">Total GM</apex:outputLabel></div></td>
+
+    <td>&nbsp;<apex:image url="/s.gif" styleClass="helpIcon" onmouseover="Tip('Raw GM plus/minus Total GM Adjustments')" onmouseout="UnTip()"/>&nbsp;</td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornAdjGMYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornAdjGMPYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornAdjGMYTD__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornAdjGMPYTD__c}"/></div></td>
+
+  </tr>
+  
+  <tr>
+
+    <td><div align="right"><apex:outputLabel styleclass="labelRow">AR Carrying Costs</apex:outputLabel></div></td>
+
+    <td>&nbsp;</td>
+    
+    <td><div align="left"><apex:outputField value="{!Account.AcornARCarryingCostsYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornARCarryingCostsPYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornARCarryingCostsYTD__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornARCarryingCostsPYTD__c}"/></div></td>
+
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><apex:outputLabel styleclass="labelRow">Inventory Carrying Costs</apex:outputLabel></div></td>
+
+    <td>&nbsp;</td>
+    
+    <td><div align="left"><apex:outputField value="{!Account.AcornInvCarryingCostsYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornInvCarryingCostsPYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornInvCarryingCostsYTD__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornInvCarryingCostsPYTD__c}"/></div></td>
+    
+  </tr>
+
+ <tr>
+
+    <td><div align="right"><apex:outputLabel styleclass="labelRow">EGM (Economic Gross Margin) </apex:outputLabel></div></td>
+
+    <td>&nbsp;<apex:image url="/s.gif" styleClass="helpIcon" onmouseover="Tip('Total GM plus/minus A/P, A/R and Inventory Carrying Costs')" onmouseout="UnTip()"/>&nbsp;</td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornEconomicGMYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornEconomicGMPYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornEconomicGMYTD__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornEconomicGMPYTD__c}"/></div></td>
+
+  </tr>
+ 
+  <tr>
+
+    <td><div align="right"><apex:outputLabel styleclass="labelRow">Fulfillment Costs</apex:outputLabel></div></td>
+
+    <td>&nbsp;<apex:image url="/s.gif" styleClass="helpIcon" onmouseover="Tip('Fulfillment cost for Admin, Warehouse, & Building')" onmouseout="UnTip()"/>&nbsp;</td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornFulfillmentCostsYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornFulfillmentCostsPYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornFulfillmentCostsYTD__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornFulfillmentCostsPYTD__c}"/></div></td>
+
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><apex:outputLabel styleclass="labelRow">Sales &amp; Marketing</apex:outputLabel></div></td>
+
+    <td>&nbsp;<apex:image url="/s.gif" styleClass="helpIcon" onmouseover="Tip('Fulfillment Selling CSR, OSR, Other Selling, & Contact Center')" onmouseout="UnTip()"/>&nbsp;</td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornSalesMarketingYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornSalesMarketingPYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornSalesMarketingYTD__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornSalesMarketingPYTD__c}"/></div></td>
+
+  </tr>
+
+  <tr>
+
+    <td><div align="right"><apex:outputLabel styleclass="labelRow">EBITDA</apex:outputLabel></div></td>
+
+    <td>&nbsp;<apex:image url="/s.gif" styleClass="helpIcon" onmouseover="Tip('ECM less A/P, A/R and Inventory Carrying Cost (Carrying Cost Add Back)')" onmouseout="UnTip()"/>&nbsp;</td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornEBITDAYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornEBITDAPYM__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornEBITDAYTD__c}"/></div></td>
+
+    <td><div align="left"><apex:outputField value="{!Account.AcornEBITDAPYTD__c}"/></div></td>
+
+  </tr>
+
+</table>
+  
+</apex:page>

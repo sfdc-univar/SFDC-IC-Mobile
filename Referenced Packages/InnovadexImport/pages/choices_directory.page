@@ -1,0 +1,16 @@
+<apex:page tabStyle="Import_Document_Activity__tab" controller="InnovadexData1.ChoiceDirectoryController" >
+    <apex:image value="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Orange_200.jpg')}"/>
+    <apex:pageBlock title="{!$Label.innovadexdata1__LBL_OPTIONS_PAGE_TITLE}" id="theBlock">
+        <apex:form >
+            <apex:selectRadio layout="pageDirection" value="{!SelectedOption}">
+                <apex:selectOption itemValue="1" itemLabel="{!$Label.innovadexdata1__LBL_OPTIONS_1}" />
+                <apex:selectOption itemValue="2" itemLabel="{!$Label.innovadexdata1__LBL_OPTIONS_2}" />
+                <apex:selectOption itemValue="3" itemLabel="{!$Label.innovadexdata1__LBL_OPTIONS_3}" />
+                <apex:selectOption itemValue="4" itemLabel="{!$Label.innovadexdata1__LBL_OPTIONS_4}" />
+            </apex:selectRadio>
+            <p align="right">
+                <apex:commandButton value="{!$Label.innovadexdata1__BTN_NEXT}" action="{!next}" />
+            </p>
+        </apex:form>
+    </apex:pageBlock>
+</apex:page>

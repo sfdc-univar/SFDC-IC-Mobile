@@ -1,0 +1,15 @@
+<apex:page Controller="InnovadexData1.UpgradeController" id="authetication"  tabStyle="Import_Document_Activity__tab" >  
+ 
+    <apex:image value="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Orange_200.jpg')}"/>                 
+   
+    <apex:form id="theForm">
+        <apex:pageBlock title="{!$Label.innovadexdata1__UPGRADE_PAGE_TITLE}" id="theBlock">         
+           <p>
+             <apex:outputText value="{!$Label.innovadexdata1__UPGRADE_PAGE_INFO}" escape="false"></apex:outputText>
+			 <apex:commandLink action="{!upgrade}" value="{!$Label.innovadexdata1__BTN_HERE}" id="theCommandLink" />
+			 <br/><br/>
+			 <apex:outputText value="{!$Label.innovadexdata1__UPGRADE_PAGE_WARNING}" escape="false"></apex:outputText>
+            </p>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

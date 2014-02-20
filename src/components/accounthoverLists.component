@@ -1,0 +1,17 @@
+<apex:component >
+
+ <!-- Begin Related List Hovers -->
+    <div class="RLPanelShadow">
+    <div class="RLPanel" id="RLPanel" onblur="sfdcPage.relatedListPanel.hideRLDelayed(null, 100)" onfocus="sfdcPage.relatedListPanel.showRL()" onmouseout="sfdcPage.relatedListPanel.hideRLDelayed(null, 100)" onmouseover="sfdcPage.relatedListPanel.showRL()">
+    <iframe  frameborder="0" id="RLPanelFrame" name="RLPanelFrame" src="/emptyHtmlDoc.html" title="Hidden Frame - Ignore">
+    </iframe></div></div>
+    <div class="listHoverLinks"><span  class="invisibleMinHeight">|</span></div>
+    
+    <script  type="text/javascript">
+    //listId,visibleRowCount,title,hasMore,refURL,refQS,onlySkipLink,shouldLoad,registerWithRelatedListPanel,listCommonId
+        try { sfdcPage.registerRelatedListPanel('RLPanel',false);} catch(e) {}
+    </script>
+
+<!-- End Related List Hovers --> 
+
+</apex:component>

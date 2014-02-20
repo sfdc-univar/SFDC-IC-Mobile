@@ -1,0 +1,8 @@
+<apex:component controller="InnovadexData1.NavigateComponentController" rendered="{!ShowNavigate}" >
+  <apex:attribute name="CSSDescription_Step1" type="String" description="Css style for step 1"/>
+  <apex:attribute name="CSSDescription_Step2" type="String" description="Css style for step 2"/>
+  <apex:attribute name="CSSDescription_Step3" type="String" description="Css style for step 3"/>
+  <apex:image value="{!CSSDescription_Step1}"/>
+  <apex:image value="{!CSSDescription_Step2}"/>
+  <apex:image value="{!CSSDescription_Step3}"/>
+</apex:component>

@@ -1,0 +1,165 @@
+<apex:page tabStyle="Account" controller="accountMerge" action="{!findAccounts}">
+    <apex:outputPanel id="script">
+        <apex:messages styleClass="message errorM3"/>
+        <script>
+            function next() {
+                var nextUrl = "{!nextUrl}";
+                if(nextUrl) {
+                    window.location = nextUrl;
+                }
+            }
+        </script>
+    </apex:outputPanel>
+    
+    
+    <div class="bPageTitle">
+    <div class="ptBody">
+    <div class="content">
+    <img title="Account" class="pageTitleIcon" alt="Account" src="/s.gif"/>
+    <h1 class="pageType noSecondHeader">Merge My Accounts</h1>
+    <div class="blank">&nbsp;</div></div><div class="links">
+    <a title="Help for this Page (New Window)" href="javascript:openPopupFocusEscapePounds(%27/help/doc/user_ed.jsp?loc=help&amp;target=account_merge.htm&amp;section=Accounts%27, %27Help%27, 700, 600, %27width=700,height=600,resizable=yes,toolbar=yes,status=no,scrollbars=yes,menubar=yes,directories=no,location=no,dependant=no%27, false, false);">
+    <span class="helpLink">Help for this Page</span>
+    <img class="helpIcon" alt="" src="/s.gif"/>
+    </a></div></div><div class="ptBreadcrumb"></div></div>
+    
+    <div class="bWizardBlock tertiaryPalette">
+        <div class="pbWizardTitle tertiaryPalette">
+            <div class="ptRightTitle">
+                Step 1 of 2
+            </div>
+            <h2>
+                Step 1. Select the records to merge
+            </h2>
+        </div>
+    </div>
+    
+    <div class="pbBody">
+        
+    
+        
+              <div class="pbDescription ">
+                  Please select up to three records that you wish to merge into one.
+              </div>
+        
+              <div class="pbWizardBody">
+        
+    
+    
+    
+    <apex:form >
+     <apex:pageBlock mode="edit" id="block">
+             <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                   <apex:panelGroup >
+                      <apex:inputText id="searchText" value="{!searchText}"/>
+                      <apex:commandButton value="Find Accounts" action="{!findAccounts}" status="status"/>
+                                                   </apex:panelGroup>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+     </apex:pageBlock>
+     
+     </apex:form>
+     
+     
+    
+    <!-- Begin RelatedListElement -->
+    <div class="bRelatedList">
+    <!-- Begin ListElement -->
+    
+    <!-- motif: Account -->
+    
+    <!-- WrappingClass -->
+    <div class="listRelatedObject accountBlock"><div class="bPageBlock secondaryPalette">
+    <div class="pbHeader"></div>
+    <div class="pbBody">
+    
+    </div><div class="pbFooter secondaryPalette"><div class="bg"></div></div></div></div>
+    <div class="listElementBottomNav"></div>
+    <!-- End ListElement -->
+    </div>
+    <!-- End RelatedListElement -->
+    
+    
+    </div> 
+            
+         </div>
+         
+      <apex:form >
+        <div class="pbWizardHeader"><div style="white-space: nowrap;float:right" class="pbTopButtons">
+                 <input type="button" class="btn" onClick="javascript:history.go(-1);" value="Cancel" id="cancel1"/>
+                   <apex:commandButton action="{!next}" value="Next" id="goNext" oncomplete="next();" rerender="script"/>
+        </div></div>
+           
+        <div class="pbJumpTo">
+               
+        </div>
+         <apex:pageBlock >
+    
+            <apex:pageBlockSection title="Results" id="results" collapsible="false">
+               <apex:pageBlockTable value="{!results}" var="l" >
+               
+                <apex:column headervalue="" width="250">
+                      <apex:inputCheckbox id="aid" value="{!l.isChecked}"/>
+                 </apex:column>
+               
+                   <apex:column headervalue="Account Name" width="250">
+                       <a href="/{!l.account.Id}">{!l.account.Name}</a>
+                   </apex:column>
+       
+                      <apex:column headervalue="{!$ObjectType.Account.fields.ShipToName__c.label}" width="250">
+                        {!l.account.ShipToName__c}
+                      </apex:column>
+    
+                      <apex:column headervalue="Customer Number" width="250">
+                        {!l.account.CustomerNumber__c} -  {!l.account.ShipToNumber__c}
+                      </apex:column>
+                      
+                      <apex:column headervalue="Shipping Address" width="250">
+                        {!l.account.ShippingStreet}<br/>
+                        {!l.account.ShippingCity},
+                        {!l.account.ShippingState}
+                        {!l.account.ShippingPostalCode}<br/>
+                        {!l.account.ShippingCountry}
+                      </apex:column>
+
+                      <apex:column headervalue="Billing Address" width="250">
+                        {!l.account.BillingStreet}<br/>
+                        {!l.account.BillingCity},
+                        {!l.account.BillingState}
+                        {!l.account.BillingPostalCode}<br/>
+                        {!l.account.BillingCountry}
+                      </apex:column>
+                      
+                      <apex:column headervalue="Owner" width="250">
+                        {!l.account.Owner.Name}
+                      </apex:column>
+                          
+                      <apex:column headervalue="{!$ObjectType.Account.fields.CustomerStatus__c.label}" width="250">
+                        {!l.account.CustomerStatus__c}
+                      </apex:column>
+                      
+                      <apex:column headervalue="Account Type" width="250">
+                        <apex:outputField value="{!l.account.RecordTypeId}"/>
+                      </apex:column>
+                  
+               </apex:pageBlockTable>
+               
+            </apex:pageBlockSection>
+         </apex:pageBlock>
+          <apex:pageBlock id="hiddenBlock" rendered="false">
+          
+          </apex:pageBlock>
+    
+    <div class="pbWizardFooter">
+     <div class="pbBottomButtons" style="white-space: nowrap;float:right">
+              
+                      
+                      <input type="button" class="btn" onClick="javascript:history.go(-1);" value="Cancel" id="cancel"/>
+                      <apex:commandButton title="Next" action="{!next}" value="Next" oncomplete="next();" rerender="script"/>
+                 </div>
+               
+             </div>
+             
+       </apex:form>
+</apex:page>

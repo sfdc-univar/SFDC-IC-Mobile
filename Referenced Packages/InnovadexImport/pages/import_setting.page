@@ -1,0 +1,29 @@
+<apex:page tabStyle="Import_Document_Activity__tab" Controller="InnovadexData1.ImportSettingController" id="page" action="{!NavigateController}">   
+   <table align="center">
+        <tr>            
+            <td align="center"><c:NavigatePage CSSDescription_Step1="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Step1_low.png')}" CSSDescription_Step2="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Step2_low.png')}" CSSDescription_Step3="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Step3_high.png')}"/></td>
+       </tr>
+    </table>
+    <apex:image value="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Orange_200.jpg')}"/>
+    <apex:pageBlock id="block" title="{!$Label.innovadexdata1__LBL_STEP3_PAGE_TITLE}">
+        <apex:form id="form"> 
+            <apex:outputLabel value="{!$Label.innovadexdata1__LBL_STEP3_PAGE_INFO}"/><br/><br/>
+            <apex:selectRadio value="{!ScheduleExp}" layout="pageDirection" onchange="allowClickSet()" id="radSheduleTime"> 
+                <apex:selectOption itemValue="{!$Label.innovadexdata1__LBL_STEP3_OPTION_1}" itemLabel="{!$Label.innovadexdata1__LBL_STEP3_OPTION_1}"/>       
+                <apex:selectOption itemValue="{!$Label.innovadexdata1__LBL_STEP3_OPTION_2}" itemLabel="{!$Label.innovadexdata1__LBL_STEP3_OPTION_2}"/>
+                <apex:selectOption itemValue="{!$Label.innovadexdata1__LBL_STEP3_OPTION_3}" itemLabel="{!$Label.innovadexdata1__LBL_STEP3_OPTION_3}"/>
+                <apex:selectOption itemValue="{!$Label.innovadexdata1__LBL_STEP3_OPTION_4}" itemLabel="{!$Label.innovadexdata1__LBL_STEP3_OPTION_4}"/>
+                <apex:selectOption itemValue="{!$Label.innovadexdata1__LBL_STEP3_OPTION_5}" itemLabel="{!$Label.innovadexdata1__LBL_STEP3_OPTION_5}"/>
+                <apex:selectOption itemValue="{!$Label.innovadexdata1__LBL_STEP3_OPTION_6}" itemLabel="{!$Label.innovadexdata1__LBL_STEP3_OPTION_6}"/>
+            </apex:selectRadio>   
+            
+            <p align="right">
+                <apex:commandButton value="{!$Label.innovadexdata1__BTN_BACK}" id="btnBack" action="{!backAction}" rendered="{!DisplayImport}"/>
+                <apex:commandButton value="{!$Label.innovadexdata1__BTN_BACK}" id="btnBackOption" action="{!backOptionPage}" rendered="{!DisplaySave}"/>
+                <apex:commandButton value="{!$Label.innovadexdata1__BTN_IMPORT}" id="btnImport" action="{!startImporting}" rendered="{!DisplayImport}"/>
+                <apex:commandButton value="{!$Label.innovadexdata1__BTN_SAVE}" id="btnSave" action="{!saveSetting}" rendered="{!DisplaySave}"/>
+            </p>              
+            <p align="left"><apex:outputLabel value="{!ErrorMessage}" style="color:red"/></p>  
+        </apex:form>
+    </apex:pageBlock>
+</apex:page>

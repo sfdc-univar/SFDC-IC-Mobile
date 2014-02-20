@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>BTN_BACK</fullName>
+        <categories>Innovadex,Button</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Button</shortDescription>
+        <value>Back</value>
+    </labels>
+    <labels>
+        <fullName>BTN_CLOSE</fullName>
+        <categories>Innovadex,Button</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Button</shortDescription>
+        <value>Close</value>
+    </labels>
+    <labels>
+        <fullName>BTN_GO</fullName>
+        <categories>Innovadex,Button</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Button</shortDescription>
+        <value>Go!</value>
+    </labels>
+    <labels>
+        <fullName>BTN_HERE</fullName>
+        <categories>Innovadex,Button</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Button</shortDescription>
+        <value>here.</value>
+    </labels>
+    <labels>
+        <fullName>BTN_IMPORT</fullName>
+        <categories>Innovadex,Button</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Button</shortDescription>
+        <value>Import !</value>
+    </labels>
+    <labels>
+        <fullName>BTN_NEXT</fullName>
+        <categories>Innovadex,Button</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Button</shortDescription>
+        <value>Next</value>
+    </labels>
+    <labels>
+        <fullName>BTN_SAVE</fullName>
+        <categories>Innovadex,Button</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Button</shortDescription>
+        <value>Save</value>
+    </labels>
+    <labels>
+        <fullName>INFO_REQUIRED_FIELD</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>INFO_REQUIRED_FIELD</shortDescription>
+        <value>Salesforce Required Fields:</value>
+    </labels>
+    <labels>
+        <fullName>LBL_IMPORT_RESULT</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Successfully Completed Setup and Import!</value>
+    </labels>
+    <labels>
+        <fullName>LBL_IMPORT_RESULT_FAILED</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Setup and Import could not be completed!</value>
+    </labels>
+    <labels>
+        <fullName>LBL_MISSING_ACTIVITY_INPUT</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Missing Activity date</value>
+    </labels>
+    <labels>
+        <fullName>LBL_MISSING_ACTIVITY_PAGE_INFO</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Please select the start date of Missing Activity received via email from Innovadex.</value>
+    </labels>
+    <labels>
+        <fullName>LBL_MISSING_ACTIVITY_PAGE_TITLE</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Import Missing Activity</value>
+    </labels>
+    <labels>
+        <fullName>LBL_MISSING_ACTIVITY_RESULT_COMPLETED</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Successfully Completed Missing Activity Import !</value>
+    </labels>
+    <labels>
+        <fullName>LBL_MISSING_ACTIVITY_RESULT_FAILED</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Missing Activity Import Could not be Completed !</value>
+    </labels>
+    <labels>
+        <fullName>LBL_OPTIONS_1</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Modify Import Mapping into your Salesforce.com</value>
+    </labels>
+    <labels>
+        <fullName>LBL_OPTIONS_2</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Import Missing Activity</value>
+    </labels>
+    <labels>
+        <fullName>LBL_OPTIONS_3</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Import Frequency</value>
+    </labels>
+    <labels>
+        <fullName>LBL_OPTIONS_4</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Re-active the Authentication token</value>
+    </labels>
+    <labels>
+        <fullName>LBL_OPTIONS_PAGE_TITLE</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Innovadex Mapping Tool Options</value>
+    </labels>
+    <labels>
+        <fullName>LBL_REACTIVE_TOKEN</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>To re-active the Innovadex App for importing Innovadex Activity into Salesforce.com, please copy and paste the Authentication Token that you received via email from Innovadex</value>
+    </labels>
+    <labels>
+        <fullName>LBL_REACTIVE_TOKEN_RESULT</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Successfully re-activated Authentication token!</value>
+    </labels>
+    <labels>
+        <fullName>LBL_REACTIVE_TOKEN_RESULT_FAILED</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Re-activated Authentication token could not be completed!</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP1_INFO</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Welcome to the Innovadex Mapping Tool!  
+&lt;br/&gt;&lt;br/&gt;
+To install the Innovadex App for importing Innovadex Activity into Salesforce.com please &lt;u&gt;copy&lt;/u&gt; and &lt;u&gt;paste&lt;/u&gt; the Authentication Token that you received via email from Innovadex</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP1_PAGE_TITLE</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Authentication Token</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP1_TOKEN_INPUT</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Authentication Token</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP2_ACCEPT_DEFAULT_MAPPING</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Accept default field level mappings</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP2_MAPPING_PRODUCTDETAIL_ATTRIBUTE</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Use the drop-down lists below to specify the selected Product Search Detail object fields that correspond to the imported columns</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP2_MAPPING_REQUEST_ATTRIBUTE</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Use the drop-down lists below to specify the selected Sample/Technical/Sales Request object fields that correspond to the imported columns</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP2_MAPPING_USER_ATTRIBUTE</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Use the drop-down lists below to specify the selected Innovadex Users object fields that correspond to the imported columns</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP2_PAGE_TITLE</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Import Mapping</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP2_SELECT_INNOVADEX_USER</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Where would you like to import new Innovadex Users?</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP2_SELECT_PRODUCT_DETAIL</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Where would you like to import Product Search details?</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP2_SELECT_REQUEST</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Where would you like to import Sample, Technical, and Sales Requests?</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP3_OPTION_1</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Every 10 minutes</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP3_OPTION_2</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Every 15 minutes</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP3_OPTION_3</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Every 30 minutes</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP3_OPTION_4</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Hourly</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP3_OPTION_5</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Daily</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP3_OPTION_6</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Weekly</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP3_PAGE_INFO</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Set the frequency for automatically importing data from Innovadex into Salesforce.com:</value>
+    </labels>
+    <labels>
+        <fullName>LBL_STEP3_PAGE_TITLE</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Import Frequency</value>
+    </labels>
+    <labels>
+        <fullName>LBL_TOKEN_EMPTYERROR_MSG</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>Please input Authentication Token</value>
+    </labels>
+    <labels>
+        <fullName>LBL_TOTALRECORD_RESULT</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Innovadex Label</shortDescription>
+        <value>{0} items imported</value>
+    </labels>
+    <labels>
+        <fullName>MSG_ENCORRECT_TYPE</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>MSG_ENCORRECT_TYPE</shortDescription>
+        <value>Some of selected Salesforce fields have incorrect type.</value>
+    </labels>
+    <labels>
+        <fullName>MSG_REQUIRED_FIELD</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>MSG_REQUIRED_FIELD</shortDescription>
+        <value>: Required field.</value>
+    </labels>
+    <labels>
+        <fullName>MSG_SELECT_FIELD</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>MSG_SELECT_FIELD</shortDescription>
+        <value>Please specify the Salesforce fields that correspond to the imported fields</value>
+    </labels>
+    <labels>
+        <fullName>STEP1_BAD_REQUEST_MSG</fullName>
+        <categories>Innovadex,Step1</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>STEP1_BAD_REQUEST_MSG</shortDescription>
+        <value>Bad request. Please try again or contact to your system admin about this issue.</value>
+    </labels>
+    <labels>
+        <fullName>STEP1_FAILED_MSG</fullName>
+        <categories>Innovadex,Step1</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>STEP1_FAILED_MSG</shortDescription>
+        <value>Invalid token, please try again</value>
+    </labels>
+    <labels>
+        <fullName>STEP1_GATEWAY_TIMEOUT</fullName>
+        <categories>Innovadex,Step1</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>STEP1_GATEWAY_TIMEOUT</shortDescription>
+        <value>Gateway timeout. Please try again or contact to your system admin about this issue.</value>
+    </labels>
+    <labels>
+        <fullName>STEP1_SEVER_ERROR</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>STEP1_SEVER_ERROR</shortDescription>
+        <value>Server error. Please try again or contact to your system admin about this issue.</value>
+    </labels>
+    <labels>
+        <fullName>STEP1_SEVICE_UNAVAILABLE</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>STEP1_SEVICE_UNAVAILABLE</shortDescription>
+        <value>Service unavailable. Please try again or contact to your system admin about this issue.</value>
+    </labels>
+    <labels>
+        <fullName>STEP1_SUCCESS_MSG</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>STEP1_SUCCESS_MSG</shortDescription>
+        <value>Your token is valid</value>
+    </labels>
+    <labels>
+        <fullName>STEP1_UNAUTHORIZED</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>STEP1_UNAUTHORIZED</shortDescription>
+        <value>Unauthorized access or invalid token. Please try again or contact your Innovadex representative about this issue.</value>
+    </labels>
+    <labels>
+        <fullName>UPGRADE_PAGE_INFO</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Upgrade Page Info</shortDescription>
+        <value>The new version of the Innovadex Import application has installed in your environment. Please complete the upgrade by clicking</value>
+    </labels>
+    <labels>
+        <fullName>UPGRADE_PAGE_TITLE</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Upgrade Page Title</shortDescription>
+        <value>Upgrade Application</value>
+    </labels>
+    <labels>
+        <fullName>UPGRADE_PAGE_WARNING</fullName>
+        <categories>Innovadex,Label</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Upgrade Page Info</shortDescription>
+        <value>&lt;u&gt;Warning&lt;/u&gt;: Existing configurations will be restored and you will need to reset field import settings.</value>
+    </labels>
+</CustomLabels>

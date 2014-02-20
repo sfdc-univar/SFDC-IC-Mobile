@@ -1,0 +1,8 @@
+<apex:component controller="LicenseAvail" access="global">
+
+
+<apex:outputText value="Total Licenses:  {!license}"/><br/>
+<apex:outputText value="Licenses Free: {!licenseAvailable}"/>
+
+
+</apex:component>

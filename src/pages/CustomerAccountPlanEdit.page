@@ -1,0 +1,93 @@
+<apex:page standardcontroller="Customer_Account_Plan__c" sidebar="false" standardStylesheets="true" tabStyle="Account" showHeader="false" extensions="capContactList">
+    <apex:sectionheader title="{!$ObjectType.Customer_Account_Plan__c.label} Edit" subtitle="{!IF(ISNULL(Customer_Account_Plan__c.name), 'New Customer Account Plan',Customer_Account_Plan__c.name)}"/>
+           <apex:form id="capForm" >
+                                
+        <apex:pageblock mode="edit">
+       
+            <apex:pageblockbuttons >
+                <apex:commandbutton value="Save" action="{!Save}"/>
+             
+            </apex:pageblockbuttons>
+
+            <!-- ********** Output Panel for Record Type : Master **********  -->
+            <apex:outputpanel >
+                <apex:pageblocksection title="Information" columns="2">
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Name}"/>
+                    <apex:inputfield onClick="this.blur()" style="border-color:white;border=0;border-style:none;" value="{!Customer_Account_Plan__c.Manager_Review__c}" required="false"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Account__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Owner_Name__c}"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Section 1: Current status and Shaping or Re-Shaping Customer Demand" columns="2">
+                    <apex:inputfield value="{!Customer_Account_Plan__c.What_changes_are_happening__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Perceived_Univar_Strengths__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.How_might_this_impact_the_customer__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Perceived_Univar_Weaknesses__c}" required="false"/>
+                     <apex:inputfield value="{!Customer_Account_Plan__c.Level_of_Partnership__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Is_the_customer_aware_of_these_changes__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Main_Competitor__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Does_the_customer_have_solutions__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Is_the_competition_entrenched__c}" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Section 2: Key Stakeholders" columns="2">
+                
+                 <!-- key stakeholders from Contact using apex -->     
+            <apex:pageBlockTable value="{!accountContacts}" var="ac" style="width:900px;" rendered="{!accountContacts.size>0}">
+           
+            <apex:column headervalue="Contact Name" style="width:200px;">
+                    <apex:outputLink value="/{!ac.Id}" target="_new" >{!ac.FirstName} {!ac.LastName}</apex:outputLink> 
+                    </apex:column>
+            <apex:column headervalue="Contact Title" style="width:200px;">
+                <apex:outputField value="{!ac.Title}" />
+                </apex:column>
+            
+            <apex:column headervalue="Stakeholder Profile" width="200px;">
+                   <apex:inputField value="{!ac.Stakeholder_Profile__c}"/>
+                   </apex:column>
+                   
+            <apex:column headervalue="Economic Outcome" width="200px;">     
+                   <apex:inputField value="{!ac.Economic_Outcome__c}"/> 
+                    </apex:column>
+            <apex:column headervalue="Demand Driver" width="200px;">    
+                   <apex:inputField value="{!ac.Demand_Driver__c}"/>
+                 </apex:column>
+             <apex:param id="conId" value="{!ac.Id}"/>     
+            </apex:pageBlockTable>
+            <!--No Contacts Found -->
+             <apex:outputText value="No Contacts for this account" style="width:800px;" rendered="{!accountContacts.size=0}"/>
+             </apex:pageblocksection>
+                <apex:pageblocksection title="Section 3: Opportunity Qualification Scorecard" columns="2" collapsible="false">
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Significant_current_or_potential_spend__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Frequent_sharing_of_best_practices__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Financially_healthy_organization__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Multiple_stakeholders_learning__c}" required="false"/>
+                     <apex:inputfield value="{!Customer_Account_Plan__c.Senior_leaders_reach_out_for_ideas__c}"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.External_pressures_to_change__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Improvement_initiatives_as_ongoing__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Internal_pressures_to_change__c}" required="false"/>
+                     <apex:inputfield value="{!Customer_Account_Plan__c.Engages_in_constructive_dialogue__c}"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Organization_wide_discontent__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Articulate_differences_current_vs_new__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Current_supplier_falls_short__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Request_continuing_conversations__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Dissatisfaction_with_existing_solutions__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Express_openness_to_escalation__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.General_organizational_needs_unmet__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.Mobilizers_exist__c}" required="false"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Section 4: Checklists and Templates" columns="2" collapsible="false">
+                   <a href=" https://na13.salesforce.com/sfc/#version?id=069a0000002T4bV" target="_new">Pre-Call Checklist</a>
+             <apex:outputText value="Attach your own Pre-Call Checklist below in the Notes and Attachments section after saving this Customer Account Plan"/>
+                   <a href=" https://na13.salesforce.com/sfc/#version?selectedDocumentId=069a0000003LhLw" target="_new">Strategic Account Template</a>
+             <apex:outputText value="Template created to support F2S efforts. Once complete attach your completed copy in the Notes and Attachments section."/>
+          
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Section 5: Action Plan" columns="2" collapsible="false">
+                    <apex:inputfield value="{!Customer_Account_Plan__c.What_Are_the_3_Biggest_Unknowns__c}" required="false"/>
+                    <apex:inputfield value="{!Customer_Account_Plan__c.What_can_I_use_Manager_Input_On__c}" required="false"/>
+                </apex:pageblocksection>
+            </apex:outputpanel>
+        </apex:pageblock>
+    </apex:form>
+    <br/>
+
+</apex:page>

@@ -1,0 +1,221 @@
+<apex:page sidebar="false" showheader="false" standardController="Account" recordSetVar="accounts" extensions="FindNearby">
+    
+    <!-- Include in Google's Maps API via JavaScript static resource -->
+   <!--  <apex:includeScript value="{!$Resource.googleMapsAPI}" /> --> 
+    <!-- Set this API key to fix JavaScript errors in production -->
+    <!--http://salesforcesolutions.blogspot.com/2013/01/integration-of-salesforcecom-and-google.html-->
+    <!--<script type="text/javascript" 
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9NQVK6sbymVREYLyBNy7xk8RRQhy_sWY&sensor=false"> 
+        </script>-->
+    <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>    
+    <!-- Setup the map to take up the whole window --> 
+    <style>
+        html, body { height: 100%; }
+        .page-map, .ui-content, #map-canvas { width: 100%; height:100%; padding: 0; }
+        #map-canvas { height: min-height: 100%; }
+    </style>
+    
+    <script>
+        function initialize() {
+            var lat, lon;
+              
+             // If we can, get the position of the user via device geolocation
+             if (navigator.geolocation) {
+                 navigator.geolocation.getCurrentPosition(function(position){
+                     lat = position.coords.latitude;
+                     lon = position.coords.longitude;                    
+                     
+                     // Use Visualforce JavaScript Remoting to query for nearby locations      
+                     Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.FindNearby.getNearby}', lat, lon,
+                         function(result, event){
+                             if (event.status) {
+                                 console.log(result);
+                                 createMap(lat, lon, result);           
+                             } else if (event.type === 'exception') {
+                                 //exception case code          
+                             } else {
+                                            
+                             }
+                          }, 
+                          {escape: true}
+                      );
+                  });
+              } else {
+                  // Set default values for map if the device doesn't have geolocation capabilities
+                    /** San Francisco **/
+                    lat = 37.77493;
+                    lon = -122.419416;
+                    
+                    var result = [];
+                    createMap(lat, lon, result);
+              }
+          
+         }
+    	 function getImage(recType,recHA,recUser,contUser){
+    	 var recContext = false;
+    	    //check for house account - HA
+    	    var posHA = recHA.indexOf("HA");
+    	    if(recUser == contUser){
+    	    	//account owner is the same as the context user
+    	    	recContext = true;
+    	    }
+    	    if(posHA != -1){
+    	    image = 'http://maps.google.com/mapfiles/marker_whiteH.png';
+    	    } else if(recType == 'Prospect' && recContext){
+    	   	image = 'https://maps.google.com/mapfiles/marker_white.png';
+    	 	} else if(recType == 'ShipTo' && recContext){
+    	 	image = 'http://maps.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png';
+    	 	} else if(!recContext){
+    	 	image = 'http://maps.google.com/mapfiles/marker_yellow.png';
+    	 	}
+    	 	return image;
+    	 }
+         function createMap(lat, lon, warehouses){
+            // Get the map div, and center the map at the proper geolocation
+            var currentPosition = new google.maps.LatLng(lat,lon);
+            var mapDiv = document.getElementById('map-canvas');
+            var map = new google.maps.Map(mapDiv, {
+                center: currentPosition, 
+                zoom: 13,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+            
+            // Set a marker for the current location
+            var positionMarker = new google.maps.Marker({
+                map: map,
+                position: currentPosition,
+                icon: 'http://maps.google.com/mapfiles/ms/micons/green.png'
+            });
+            
+                        
+            // Keep track of the map boundary that holds all markers
+            var mapBoundary = new google.maps.LatLngBounds();
+            mapBoundary.extend(currentPosition);
+            
+            // Set markers on the map from the @RemoteAction results
+            var warehouse;
+            for(var i=0; i<warehouses.length;i++){
+                warehouse = warehouses[i];
+                console.log(warehouses[i]);
+                setupMarker();
+            }
+            
+            // Resize map to neatly fit all of the markers
+            map.fitBounds(mapBoundary);
+            
+           function setupMarker(){ 
+                var warehouseNavUrl;
+                var OpptyRelNavUrl;
+                  //Create Opportunity RelatedList         
+               // Determine if we are in Salesforce1 and set navigation link appropriately
+               /*
+                try{
+                    if(sforce.one){
+                 OpptyRelNavUrl = 'javascript:sforce.one.navigateToURL(Related_Opportunities)';
+                  }
+                } catch(err) {
+                    console.log(err);
+                    OpptyRelNavUrl = '\\' + warehouse.Id;
+                }
+                */
+				//Link to account
+                 try{
+   					 if(sforce.one){
+    					warehouseNavUrl ='javascript:sforce.one.navigateToSObject(\'' + warehouse.Id + '\')';
+    }
+                } catch(err) {
+                    console.log(err);
+                    warehouseNavUrl = '\\' + warehouse.Id;
+                }
+                
+                //remove undefined values from results
+                var warehousePhone = warehouse.ShippingPhone__c;
+                	if(warehousePhone == null){
+                	warehousePhone = ' ';
+                	} 
+                var warehouseStreet =  warehouse.ShippingStreet;
+                	if(warehouseStreet == null){
+                	warehouseStreet = ' ';
+                	}
+                var warehouseCity =  warehouse.ShippingCity + '<br/> ';
+                	if(warehouseCity == null){
+                	warehouseCity = ' ';
+                	}	
+               var warehouseOppty = '<a href="\\apex/Related_Opportunities?start=' + warehouse.Id +'"># of Opportunities: ' + warehouse.Total_Count_Opportunities__c + '</a><br/> ';
+                	console.log(warehouseOppty);
+                	if(warehouse.Total_Count_Opportunities__c > 0){
+                	//alert(warehouseOppty);
+                	}
+                	if(warehouse.Total_Count_Opportunities__c == 0){
+                	warehouseOppty = ' ';
+                	} 
+                var warehouseRolling12 =  'Rolling 12 mo Sales: ' + warehouse.Rolling12MonthSales__c + '<br/>';
+                   	if(warehouse.Rolling12MonthSales__c == null){
+                	warehouseRolling12 = ' ';
+                	}	
+                var warehouseSalesOffice = 'Sales Office: ' + warehouse.SalesOfficeName__c;
+                	if(warehouse.SalesOfficeName__c == null){
+                	warehouseSalesOffice = ' ';
+                   	}
+                var warehouseIndustry = 'Industry: ' + warehouse.Industry + '<br/>';
+                	if(warehouse.Industry == null){
+                	warehouseIndustry = ' ';
+                	}  
+                var wareDate = new Date(warehouse.LastActivityDate);
+                var warehouseActivity = 'Last Activity: ' + wareDate.toDateString() + '<br/>';
+                	if(warehouse.LastActivityDate == null){
+                	warehouseActivity = ' ';
+                	}	
+                var warehouseDetails = 
+                    '<a href="' + warehouseNavUrl + '">' + 
+                    warehouse.Name + '</a><br/>' + 
+                    warehouse.OwnerLink__r.Name + ' ' + warehousePhone + '<br/>' +
+                    warehouse.RecordType.DeveloperName + '<br/>' +
+                    warehouseOppty + ' ' + warehouseRolling12  + '<br/>' + 
+                    warehouseSalesOffice + ' ' + warehouseIndustry  +
+                    warehouseActivity + 
+                    '<a href="\\apex/FindDirections?start=' + lat +', ' + lon + '&end=' +
+                    warehouse.Location__Latitude__s + ', ' + warehouse.Location__Longitude__s +  '">' + 
+                    warehouseStreet + ' ' + warehouseCity + '</a>'; 
+               
+               // Create the information that will pop up on the marker     
+               var infowindow = new google.maps.InfoWindow({ 
+                   content: warehouseDetails
+               });
+               // Place the marker on the map   
+               var recType = warehouse.RecordType.DeveloperName;
+               var recHA = warehouse.OwnerLink__r.Name;
+               var recUser = warehouse.OwnerLink__r.Id;
+               var contUser = '{!$User.Id}';          
+               
+               
+               var image = getImage(recType,recHA,recUser,contUser);
+                               
+               var marker = new google.maps.Marker({
+                   map: map,
+                   icon: image,
+                   position: new google.maps.LatLng( 
+                                   warehouse.Location__Latitude__s, 
+                                   warehouse.Location__Longitude__s)
+               });
+               mapBoundary.extend(marker.getPosition());
+               
+               // Add the action to open up the panel when it's marker is clicked      
+               google.maps.event.addListener(marker, 'click', function(){
+                   infowindow.open(map, marker);
+               });
+               google.maps.event.addListener(map, 'click', function(){
+               infowindow.close();
+               });
+           }
+        }
+        // Fire the initialize function when the window loads
+        google.maps.event.addDomListener(window, 'load', initialize);
+   </script>
+    
+    <!--  All content is rendered by the Google Maps code -->
+    <!--  This minimal HTML justs provide a target for GMaps to write to -->
+    <body style="font-family: Arial; border: 0 none;">
+        <div id="map-canvas"></div>
+    </body>
+</apex:page>

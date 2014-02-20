@@ -1,0 +1,16 @@
+<apex:page tabStyle="Import_Document_Activity__tab" Controller="InnovadexData1.ImportResultController" id="thePage" >
+    <apex:image value="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Orange_200.jpg')}"/>  
+   <apex:pageBlock id="theBlock">
+        <apex:Form id="FormConten">
+            <p align="center">
+            <h2><apex:outputLabel value="{!ResultMessage}" style="font-weight:bold"></apex:outputLabel></h2>
+            <br/><br/>
+            <h1><apex:outputLabel value="{!TotalOfResult}" style="font-weight:bold"></apex:outputLabel></h1>
+            </p>
+            <p align="right">
+                <apex:commandButton value="{!$Label.innovadexdata1__BTN_CLOSE}" action="{!cancel}" />
+            </p>                
+            <br/>      
+        </apex:Form>            
+    </apex:pageBlock>
+</apex:page>

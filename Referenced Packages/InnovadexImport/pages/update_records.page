@@ -1,0 +1,28 @@
+<apex:page controller="InnovadexData1.DataValidationController" tabStyle="Import_Document_Activity__tab" id="pageCotent">
+    <apex:image value="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Orange_200.jpg')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.InnovadexData1__Innovadex, 'jquery_calendar/js/jquery-1.6.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.InnovadexData1__Innovadex, 'jquery_calendar/js/jquery-ui-1.8.16.custom.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.InnovadexData1__Innovadex, 'jquery_calendar/css/ui-lightness/jquery-ui-1.8.16.custom.css')}"/>
+    <script type="text/javascript">
+        $(function() {                   
+            jQuery('input[id*="missingDate"]').datepicker({ showOn: 'button' });   
+            jQuery('input[id*="missingDate"]').width('7.5em');       
+        });        
+               
+    </script>
+    <apex:pageBlock title="{!$Label.innovadexdata1__LBL_MISSING_ACTIVITY_PAGE_TITLE}" id="pageBlockContent">
+        <apex:form id="formContent"> 
+            <apex:outputText value="{!$Label.innovadexdata1__LBL_MISSING_ACTIVITY_PAGE_INFO}" escape="false"></apex:outputText>
+                        <br/><br/>
+            <p align="center">
+                <apex:outputText value="{!$Label.innovadexdata1__LBL_MISSING_ACTIVITY_INPUT}" ></apex:outputText>
+                                <br/>
+                <apex:inputText size="10" id="missingDate"  onkeypress="return false;" value="{!MissingDate}" />
+            </p>
+            <p align="right">
+                <apex:commandButton value="{!$Label.innovadexdata1__BTN_BACK}" action="{!cancel}" />
+                <apex:commandButton value="{!$Label.innovadexdata1__BTN_GO}" id="btnNext" action="{!startImport}" />
+            </p>               
+        </apex:form>        
+    </apex:pageBlock>
+</apex:page>

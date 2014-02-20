@@ -1,0 +1,225 @@
+<apex:page controller="InnovadexData1.MappingAttrRequestController" tabStyle="Import_Document_Activity__tab" id="thePage" action="{!NavigateController}">
+    <script type="text/javascript">       
+        document.onreadystatechange=function(){
+            if(document.readyState=="complete"){
+            requireFieldMSG();
+            }
+        }
+        function requireFieldMSG(){         
+            var requiredFields = document.getElementById('thePage:theBlock:theForm:theRepeat:0:customComponent:theComponent:inputHidRequiredsLabel').value;         
+            if(requiredFields != ''){        
+                var resultValue = requiredFields.split(';');
+                var requiredFiledInfo='';
+                for(i=0 ; i<resultValue.length; i++)
+                    requiredFiledInfo += resultValue[i] + ', ';
+                requiredFiledInfo = requiredFiledInfo.substr(0,requiredFiledInfo.length-2);
+                requiredFiledInfo = '(*) {!$Label.INFO_REQUIRED_FIELD} '+requiredFiledInfo;
+                var msgRequiredFiled = document.getElementById('thePage:info');                          
+                msgRequiredFiled.style.width = '1px';                            
+                msgRequiredFiled.innerHTML = '&nbsp;';                
+                msgRequiredFiled.innerHTML = requiredFiledInfo;
+            }
+        }
+        
+        function isValid(){
+            try{                
+                //check map correct type
+                var checkMapType = isMapCorrectType();
+
+                var arrInfo = checkMapType.split('|',3);
+                var isMapField = arrInfo[0];
+                var selectName = arrInfo[1];
+                var selectLabel = arrInfo[2];                  
+                if(isMapField == 'false'){
+                    alert('{!$Label.MSG_ENCORRECT_TYPE}');
+                    return true;
+                }                
+                
+                //check select any field
+                if(isSelectAnyField(selectLabel) == true){                                   
+                    alert('{!$Label.MSG_SELECT_FIELD}');
+                    return true;
+                }
+                
+                // is required field checked
+                var requireNotSelect = isSelectRequireField(selectLabel);
+                if(requireNotSelect != ''){                       
+                    alert(requireNotSelect + '{!$Label.MSG_REQUIRED_FIELD}');
+                    return true;
+                }        
+                               
+                //insert data in input hidden
+                var listFieldSelected= document.getElementById('thePage:theBlock:theForm:SelectFieldList');
+                listFieldSelected.value = selectName;                
+                return false;
+            }catch(ex){
+                alert(ex);
+                return true;
+            }
+        }
+        
+        function isMapCorrectType(){
+            var numberOfFields = document.getElementById('thePage:theBlock:theForm:numberOfFields').value;
+            var selectedFields = '';
+            var selectedFieldsLabel = '';                                
+            var checkMapField = 'true';
+            var result = '';
+            for(i = 0;i< numberOfFields;i++){ 
+                var selectList = document.getElementById('thePage:theBlock:theForm:theRepeat:'+ i +':customComponent:theComponent:theSelect');
+                var importFieldType = document.getElementById('thePage:theBlock:theForm:theRepeat:'+i+':customComponent:theComponent:inputHidImportFieldType').value; 
+                for(j = 0; j < selectList.length; j++){ 
+                    if(selectList.options[j].selected){
+                        var valueSalesforceField = selectList.options[j].value;                
+                        selectedFields+= valueSalesforceField + ';';
+                        var iconError = document.getElementById('thePage:theBlock:theForm:theRepeat:'+i+':customComponent:theComponent:checkError');
+                        if(valueSalesforceField !=''){
+                            selectedFieldsLabel += selectList.options[j].text + ';';
+                            var arrSFType = valueSalesforceField.split(',',3);                                        
+                            var UserImportFiledName = document.getElementById('thePage:theBlock:theForm:theRepeat:'+ i +':customComponent:theComponent:inputHidImportFieldName').value;                                                                                                  
+                            var compare = mapField(UserImportFiledName, importFieldType, arrSFType[1]);                                                                                                      
+                            if(!compare){
+                                selectList.focus();
+                                iconError.innerHTML = '&nbsp;';
+                                iconError.style.backgroundColor = 'red';
+                                iconError.style.width = '1px';                                              
+                                checkMapField = 'false';
+                            }
+                            else{
+                                iconError.innerHTML = '';
+                            }                  
+                        }
+                        else{
+                            iconError.innerHTML = '';
+                        }               
+                    }
+                }
+            }
+            selectedFields = selectedFields.substr(0,selectedFields.length - 1);
+            selectedFieldsLabel = selectedFieldsLabel.substr(0,selectedFieldsLabel.length - 1);
+            result = checkMapField+'|'+selectedFields+'|'+selectedFieldsLabel;            
+            return result;
+        }
+        
+        function isSelectAnyField(selectLabel){           
+            var result = false;             
+            if(selectLabel == ''){                
+                result = true
+            }
+            return result;
+        }
+        
+        function isSelectRequireField(selectLabel){
+            var requiredFields = document.getElementById('thePage:theBlock:theForm:theRepeat:0:customComponent:theComponent:inputHidRequiredsLabel').value;
+            var nameSelect = selectLabel.split(";");
+            var resultRequest = '';
+            if(requiredFields != ''){                     
+                var arrRequire = requiredFields.split(";");
+                for(i = 0; i < arrRequire.length; i++ ){                          
+                    var count = 0;                        
+                    for(j = 0; j < nameSelect.length; j++){
+                        if(arrRequire[i] == nameSelect[j])               
+                        break;                       
+                        count = count + 1;                                
+                    }                                   
+                    if(count == nameSelect.length){
+                        resultRequest += arrRequire[i] + ', ';                  
+                    }
+                }
+                resultRequest = resultRequest.substr(0,resultRequest.length-2);                         
+            }
+            return resultRequest;
+        }
+        
+        function isObjectExistInArray(array, obj){
+            var result = false;
+            for(k=0; k<array.length; k++){                       
+                if(array[k] == obj){
+                    result = true;
+                    break;
+                }
+            }
+            return result;  
+        }
+
+        //map field type of salesforce with field type of user import field
+        function mapField(ImportFieldName, ImportFieldType, SalesforceType){
+            var StringDefaultSFType = new Array('STRING','CURRENCY','PHONE','PICKLIST','TEXT','TEXTAREA','URL','LOOKUP RELATIONSHIP','EMAIL','COMBOBOX'); 
+            var IntegerDefaultSFType = new Array('AUTO NUMBER','INTEGER','DOUBLE','PERCENT');        
+            var BooleanDefaultSFType = new Array('BOOLEAN','CHECKBOX');
+            var DateDefaultSFType = new Array('DATE','DATE/TIME','DATETIME');
+            var result = false;                        
+            var namespace = document.getElementById('thePage:theBlock:theForm:namespace').value;
+
+            if(ImportFieldName == namespace + 'DatetimeStamp__c'){                
+                result = isObjectExistInArray(DateDefaultSFType, SalesforceType);
+            }
+            else if(ImportFieldType == 'STRING'){
+                    result = isObjectExistInArray(StringDefaultSFType, SalesforceType);
+                }
+                else if(ImportFieldType == 'INTEGER'){
+                    result = isObjectExistInArray(IntegerDefaultSFType, SalesforceType);
+                }
+                    else if(ImportFieldType == 'BOOLEAN'){
+                        result = isObjectExistInArray(BooleanDefaultSFType, SalesforceType);
+                    }
+            return result;
+        }        
+    </script>    
+    <table align="center">
+        <tr>            
+            <td align="center"><c:NavigatePage CSSDescription_Step1="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Step1_low.png')}" CSSDescription_Step2="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Step2_high.png')}" CSSDescription_Step3="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Step3_low.png')}"/></td>
+       </tr>
+     
+    </table> 
+    <table width="100%">
+      <tr valign="top">
+           <td align="left">
+               <apex:image value="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Orange_200.jpg')}"/>
+           </td>          
+       </tr>
+        <tr valign="top">          
+           <td align="right" style="padding-right:5px:">
+              <i> <apex:outputLabel id="info" style="height:20px"/> </i>
+           </td>           
+       </tr>
+    </table>     
+    <apex:pageblock title="{!$Label.innovadexdata1__LBL_STEP2_PAGE_TITLE}" id="theBlock">
+        <apex:outputLabel id="info"/>
+        <apex:form id="theForm">
+            <table border="0" cellpadding="0" cellspacing="5" width="100%">
+                <tr>
+                    <td><apex:outputLabel Value="{!$Label.innovadexdata1__LBL_STEP2_MAPPING_REQUEST_ATTRIBUTE}"/></td>
+                </tr>
+                <tr>
+                    <td align="left">
+                        <table border="0" cellpadding="0" cellspacing="2" width="100%">
+                            <tr>
+                                <th width="10%"/>
+                                <th width="35%" align="center">Imported Field</th>
+                                <th align="center" >Salesforce Field</th>
+                                <th width="10%"/>                            
+                            </tr>                            
+                            <apex:repeat value="{!ImportedFields}" var="ImportedField" id="theRepeat">
+                                <tr>                                                             
+                                    <td colspan="4">
+                                        <nobr><c:GetFieldLabel_Com selectedObject="{!RequestObjectName}" 
+                                        ImportFieldName="{!ImportedField}"  MapField="{!MapField}" id="customComponent" /></nobr>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <apex:commandButton value="{!$Label.innovadexdata1__BTN_BACK}" action="{!cancel}" />
+                        <apex:commandButton value="{!$Label.innovadexdata1__BTN_NEXT}" action="{!next}" onclick="if(isValid()){return false}" />
+                    </td>
+                </tr>
+            </table>
+            <apex:inputHidden value="{!Namespace}" id="namespace"/>
+            <apex:inputHidden value="{!SelectFieldList}" id="SelectFieldList" />
+            <apex:inputHidden value="{!NumberOfImportedFields}" id="numberOfFields" />
+        </apex:form>
+    </apex:pageblock>
+</apex:page>

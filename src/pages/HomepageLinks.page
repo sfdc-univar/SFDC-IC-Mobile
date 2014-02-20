@@ -1,0 +1,52 @@
+<apex:page showHeader="false" sidebar="false" docType="html" controller="showCustomLinks" >
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+<style>
+.pbBody
+{
+   background-color:#CCEEFF;
+}
+.urlListe
+{
+    padding-left:0px;
+    padding-top:12px;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:90%;
+    line-height:1.5em;
+    text-decoration:none;
+   
+}
+
+</style>
+<script type="text/javascript">
+function getCLSize(){
+var cLDiv = document.getElementById('cLinks');
+var cLSize = cLDiv.offsetHeight;
+parent.postMessage('aframe~'+cLSize,'*');
+}
+</script>
+<body class="pbBody" id="pbBody" onLoad="getCLSize();">
+<div id="cLinks">
+<apex:dataTable value="{!Links}" var="L">
+<apex:column >
+
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link1}" rendered="{!NOT(IsBLANK(L.link1))}"><font color="#1468b6">{!L.url1}</font><br/></apex:outputLink>
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link2}" rendered="{!NOT(IsBLANK(L.link2))}"><font color="#1468b6">{!L.url2}</font><br/></apex:outputLink>
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link3}" rendered="{!NOT(IsBLANK(L.link3))}"><font color="#1468b6">{!L.url3}</font><br/></apex:outputLink>
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link4}" rendered="{!NOT(IsBLANK(L.link4))}"><font color="#1468b6">{!L.url4}</font><br/></apex:outputLink>
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link5}" rendered="{!NOT(IsBLANK(L.link5))}"><font color="#1468b6">{!L.url5}</font><br/></apex:outputLink>
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link6}" rendered="{!NOT(IsBLANK(L.link6))}"><font color="#1468b6">{!L.url6}</font><br/></apex:outputLink>
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link7}" rendered="{!NOT(IsBLANK(L.link7))}"><font color="#1468b6">{!L.url7}</font><br/></apex:outputLink>
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link8}" rendered="{!NOT(IsBLANK(L.link8))}"><font color="#1468b6">{!L.url8}</font><br/></apex:outputLink>
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link9}" rendered="{!NOT(IsBLANK(L.link9))}"><font color="#1468b6">{!L.url9}</font><br/></apex:outputLink>
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link10}" rendered="{!NOT(IsBLANK(L.link10))}"><font color="#1468b6">{!L.url10}</font><br/></apex:outputLink>
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link11}" rendered="{!NOT(IsBLANK(L.link11))}"><font color="#1468b6">{!L.url11}</font><br/></apex:outputLink>
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link12}" rendered="{!NOT(IsBLANK(L.link12))}"><font color="#1468b6">{!L.url12}</font><br/></apex:outputLink>
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link13}" rendered="{!NOT(IsBLANK(L.link13))}"><font color="#1468b6">{!L.url13}</font><br/></apex:outputLink>
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link14}" rendered="{!NOT(IsBLANK(L.link14))}"><font color="#1468b6">{!L.url14}</font><br/></apex:outputLink>
+<apex:outputLink styleClass="urlListe" target="_new" value="{!L.link15}" rendered="{!NOT(IsBLANK(L.link15))}"><font color="#1468b6">{!L.url15}</font><br/></apex:outputLink>
+</apex:column>
+</apex:dataTable>
+</div>
+</body>
+
+ </apex:page>

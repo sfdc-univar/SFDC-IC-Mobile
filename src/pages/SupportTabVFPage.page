@@ -1,0 +1,55 @@
+<apex:page tabStyle="Support__tab" showHeader="true" sidebar="true" label="Salesforce.com Premier Support" standardStylesheets="true">
+<apex:sectionHeader title="Salesforce.com Premier Support" id="support" />
+
+<apex:pageBlock mode="detail">
+
+<table border=".5px" cellpadding="2" cellspacing="2" width="100%">
+<tr bgcolor="#00BBDD">
+<th><br/><center><h1>Premier Support Contact Information</h1></center><br/></th>
+</tr>
+<tr bgcolor="#FFFFFF">
+
+<br/><br/>
+<font color="red">NOTE:  Please contact the Help Desk for any issues other than Reports.</font>
+<br/>
+<br/>
+
+<td><br/><h2> Premier Support Telephone Number is 1-866-614-7375</h2>
+<br/><br/>
+Univar Access Code: 263141
+<br/>
+<br/>
+Please have the answers to the following questions ready prior to contacting Premier Support:
+<br/>
+<br/>
+1.  What report name do you want to use?
+<br/>
+2.  In what folder will the report be saved?  My Personal Custom Reports?<br/>
+
+3.  What objects are involved:  Account, Contact, Opportunity, CPP, etc.<br/>
+
+4.  By what fields would you like to group the information:  Account Owner, Role, Customer?<br/>
+
+5.  Are there any other criteria with which to filter the report, such as a date range or dollar amount?<br/>
+
+<br/>
+<br/>
+Links to training videos for Reports and Dashboards:
+<br/>
+<br/>
+<a href='http://www.salesforce.com/customer-resources/learning-center/#reports-dashboards'>http://www.salesforce.com/customer-resources/learning-center/#reports-dashboards</a>  (Short Video)
+
+<br/>
+<br/>
+<a href='https://salesforce.adobeconnect.com/_a13852757/gettingstartedreportsdashboardseng/'>https://salesforce.adobeconnect.com/_a13852757/gettingstartedreportsdashboardseng/</a>   (30 mins)
+<br/>
+<br/><br/>
+NOTE:  Please contact the Help Desk for any issues other than Reports.
+<br/>
+</td>
+</tr>
+</table>
+
+</apex:pageBlock>
+    
+  </apex:page>

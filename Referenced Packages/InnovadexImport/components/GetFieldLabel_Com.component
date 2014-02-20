@@ -1,0 +1,26 @@
+<apex:component controller="InnovadexData1.SObjectUtil" id="theComponent">    
+    <apex:attribute name="selectedObject" type="String" description="object" assignTo="{!selectedObject}" />
+    <apex:attribute name="ImportFieldName" type="String" description="Import Filed Name format(Name of Filed,Type,label of Field)" 
+    assignTo="{!userImportField}"/>
+    <apex:attribute name="MapField" type="String" description="the Fields was mapped and saved into one of there Object(Mapped Document Activity Field, Mapped Innovadex User Field, Mapped Request Field)" 
+    assignTo="{!MapField}"/>
+    <apex:attribute name="ExcludeField" type="String" description="the Required Fields that we do not want to appear in page salesforce " 
+    assignTo="{!ExcludeField}"/>
+     <table border="0" cellpadding="0" cellspacing="2" width="100%">
+        <tr>
+            <td width="10%"/>
+            <td width="35%"><apex:outputLabel id="theImportFieldLabel" value="{!ImportFieldLabel}"/></td>            
+            <td>
+                <b><apex:outputLabel id="checkError" value="" /></b>&nbsp;
+                <apex:selectList size="1" id="theSelect" value="{!ValueOfApexSelectList}">
+                    <apex:selectoptions value="{!SelectedField}"/>
+                </apex:selectList>                      
+            </td>
+            <td width="10%"/>                        
+        </tr>
+    </table>
+    <apex:inputHidden id="inputHidImportFieldName"  value="{!ImportName}"/>
+    <apex:inputHidden id="inputHidImportFieldType" value="{!ImportFieldType}"/>   
+    <apex:inputHidden id="inputHidRequireds" value="{!RequiredFields}"/> 
+    <apex:inputHidden id="inputHidRequiredsLabel" value="{!RequiredFieldsLabel}"/>   
+</apex:component>

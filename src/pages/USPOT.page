@@ -1,0 +1,49 @@
+<apex:page tabStyle="UPAT__tab" showHeader="true" title="UPAT Tool" docType="html-5.0">
+<script type="text/javascript" src="https://cs16.salesforce.com/canvas/sdk/js/29.0/canvas-all.js"></script>
+
+<script type="text/javascript">
+ function loginHandler(e) {
+            var uri;
+            if (! Sfdc.canvas.oauth.loggedin()) {
+                uri = Sfdc.canvas.oauth.loginUrl();
+                Sfdc.canvas.oauth.login(
+                    {uri : uri,
+                        params: {
+                            response_type : "token",
+                            client_id : "3MVG9zJJ_hX_0bb9VzFFrATjdszNBuzZOVObxh_LSchRbCUla54NP_f46epRz8ILzyTXQkWFiP35j7dzEJMoq",
+                            redirect_uri : encodeURIComponent(
+                                "https://uvf.owex.oliverwyman.com/Distribution")
+                        }});
+            }
+            else {
+                Sfdc.canvas.oauth.logout();
+                login.innerHTML = "Login";
+                Sfdc.canvas.byId("oauth").innerHTML = "";
+            }
+            return false;
+        }
+
+        // Bootstrap the page once the DOM is ready.
+        Sfdc.canvas(function() {
+            // On Ready...
+            var login    = Sfdc.canvas.byId("login"),
+                loggedIn = Sfdc.canvas.oauth.loggedin(),
+                token = Sfdc.canvas.oauth.token()
+            login.innerHTML = (loggedIn) ? "Logout" : "Login";
+            if (loggedIn) {
+                 // Only displaying part of the OAuth token for better formatting.
+                Sfdc.canvas.byId("oauth").innerHTML = Sfdc.canvas.oauth.token()
+                    .substring(1,40) + "…";
+            }
+            login.onclick=loginHandler;
+        });
+        
+</script>
+
+<apex:sectionHeader title="Univar Price Advantage Tool" help="/help/doc/user_ed.jsp" id="upat"/> 
+<apex:pageBlock >
+   <div id="oauth"></div>
+ <apex:canvasApp applicationName="Univar_Price_Advantage_Tool" canvasId="upat" id="upat" height="800" width="1800" scrolling="auto"/>
+ 
+ </apex:pageBlock>
+</apex:page>

@@ -1,0 +1,214 @@
+<apex:page standardController="Account" showHeader="true" title="{!Account.name}" tabStyle="Account" standardStylesheets="true" extensions="AccountExt" >
+<script src="/soap/ajax/20.0/connection.js"></script>
+<style>
+      .activeTab {background-color: #236FBD;border:double #236FBD;color:white; background-image:none;white-space:nowrap;cursor:pointer;border-width:thin thick;border-top-right-radius: 10px;-moz-border-radius-topright: 10px;}
+     .inactiveTab {background-color:#DEEFF4;color:black; background-image:none;white-space:nowrap;cursor:pointer;border-top-right-radius: 10px;-moz-border-radius-topright: 10px;}
+      .eSubheader smH{background-color: transparent}
+     .eSubsection {background-color: transparent}
+     .labelCol {font-size:100%;}
+     .dataCol {font-size:100%;}
+     .rich-tabpanel-content {background-color:#FFFFFF;font-size:12px;)
+     .labelCol vfLabelColTextWrap{font-size:12px;}
+     .body {background-color:#FFFFFF;)
+     .noList{list-style-img: url('/profilephoto/005/T');padding-left:0px}
+      </style>
+      
+<script type="text/javascript">
+window.sfdcPage = new DetailPage("{!account.id}");
+  var rkjq$ = jQuery.noConflict();
+        if(jQuery) {
+        jQuery.noConflict();
+        }
+</script>
+  
+  <apex:sectionHeader title="{!Account.name} - {!Account.RecordType.Name}" help="/help/doc/user_ed.jsp" id="AccountHeader" printURL="/{!account.id}/p"/> 
+<script type="text/javascript">
+new TagMenuButton('tagsMru', '/_ui/common/html/tag/TagsMRUServlet');
+</script>
+  
+<!-- begin detail tab -->
+  <apex:tabPanel activeTabClass="activeTab" inactiveTabClass="inactiveTab" switchType="client">
+     
+      <apex:tab label="Details" name="AccDetails" id="tabdetails">
+        
+
+
+ 
+<!---------------------- begin detail table ---------------------------------------------->
+    <apex:pageBlock title="Account Detail">
+            
+    <apex:pageBlockButtons >
+    <apex:form >
+
+     <apex:commandButton action="{!edit}" value="Edit"/>
+ <apex:commandButton action="{!delete}" value="Delete"/>
+<input value="Sharing"  class="btn" title="Sharing" name="share" onclick="navigateToUrl('/p/share/AccSharingDetail?parentId={!account.id}','DETAIL','share');" type="button" />
+<input value="Include Offline"  class="btn" title="Include Offline" name="offline" onclick="navigateToUrl('/setup/offline/offlinebriefcase.jsp?addId={!account.id}','DETAIL','offline');" type="button" />
+<input type="button" onclick="navigateToUrl('/apex/Account_Merge?searchText={!URLENCODE(account.name)}','DETAIL','offline');" name="merge_accounts" title="Merge Accounts" class="btn" value="Merge Accounts" />
+
+</apex:form>
+    
+    </apex:pageBlockButtons>
+ <apex:pageblocksection title="Account Information" showheader="false" collapsible="false" columns="2">
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Account Owner"/>
+                            <apex:outputpanel >
+                            <apex:outputfield value="{!Account.OwnerId}"/>
+                            <apex:outputlink value="{!URLFOR($Action.Account.ChangeOwner,Account.id)}" rendered="{!NOT(ISNULL(Account.Id))}">[Change]</apex:outputlink>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                    <apex:outputfield value="{!Account.Name}"/>
+                    <apex:outputfield value="{!Account.ParentId}"/>
+                    <apex:pageblocksectionitem />
+                       <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Billing Address"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Account.BillingStreet}"/><br/>
+                            <apex:outputfield value="{!Account.BillingCity}"/>&nbsp;&nbsp;
+                            <apex:outputfield value="{!Account.BillingStateCode}"/>&nbsp;&nbsp;&nbsp;
+                            <apex:outputfield value="{!Account.BillingPostalCode}"/><br/>
+                            <apex:outputfield value="{!Account.BillingCountryCode}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>    
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Shipping Address"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Account.ShippingStreet}"/><br/>
+                            <apex:outputfield value="{!Account.ShippingCity}"/>&nbsp;&nbsp;
+                            <apex:outputfield value="{!Account.ShippingStateCode}"/>&nbsp;&nbsp;&nbsp;
+                            <apex:outputfield value="{!Account.ShippingPostalCode}"/><br/>
+                            <apex:outputfield value="{!Account.ShippingCountryCode}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                                 
+                    <apex:outputfield value="{!Account.BillingPhoneNumber__c}"/>
+                    <apex:outputfield value="{!Account.ShippingPhone__c}"/>
+                    <apex:outputfield value="{!Account.BillingFax__c}"/>                    
+                    <apex:outputfield value="{!Account.ShippingFax__c}"/>
+                    <apex:outputfield value="{!Account.Website}"/>
+                    <apex:outputfield value="{!Account.Industry}"/>
+                    <apex:outputfield value="{!Account.RecordTypeId}"/>
+                    <apex:outputfield value="{!Account.TickerSymbol}"/>
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Created By"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Account.CreatedById}"/>&nbsp;
+                            <apex:outputfield value="{!Account.CreatedDate}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Last Modified By"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Account.LastModifiedById}"/>&nbsp;
+                            <apex:outputfield value="{!Account.LastModifiedDate}"/>
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>         
+                    <apex:pageblocksectionitem >  
+                        <apex:outputlabel value="User Last Modified By"/>            
+                        <apex:outputpanel >
+                            <apex:outputField value="{!Account.UserLastModifiedBy__c}"/>&nbsp;
+                            <apex:outputField value="{!Account.UserLastModifiedDate__c}"/>&nbsp;                            
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>           
+                </apex:pageblocksection>
+ </apex:pageBlock>
+    <!-- end detail table -->
+         
+         
+     <apex:pageBlock title="Useful Links">
+   <apex:pageblocksection title="Useful Links" showheader="false" collapsible="false" columns="3">
+  <apex:pageblocksectionitem />
+   <apex:outputLink value="/servlet/servlet.Integration?lid=00b30000000fG39&eid={!account.id}" target="_new">Map</apex:outputLink>
+<apex:outPutLink value="/servlet/servlet.Integration?lid=00b30000000fN4K&eid={!account.id}" target="_new">Hoover's</apex:outPutLink>
+<apex:outPutLink value="/servlet/servlet.Integration?lid=00b30000000fG3A&eid={!account.id}" target="_new">News (Google)</apex:outputLink>
+<apex:outPutLink value="/servlet/servlet.Integration?lid=00b30000000rTrz&eid={!account.id}" target="_new">90-Day Activity Report</apex:outputLink>
+</apex:pageblocksection>
+
+
+   
+<apex:relatedList subject="{!account.id}" id="relContacts" list="Contacts" rendered="{!$ObjectType.Contact.accessible}"/ > 
+<apex:relatedList list="Opportunities" subject="{!account.id}" id="oppRL" pagesize="5" rendered="{!$ObjectType.Opportunity.accessible}" / >
+<apex:relatedList list="OpenActivities" subject="{!account.id}" id="openactivitiesRL" pagesize="5" rendered="{!$ObjectType.OpenActivity.accessible}" / >
+<apex:relatedList list="ActivityHistories" subject="{!account.id}" id="ahRL" pagesize="5" rendered="{!$ObjectType.ActivityHistory.accessible}" / >
+<apex:relatedList list="R00N30000002eE6IEAU" subject="{!account.id}" id="srRL" pagesize="5" rendered="{!$ObjectType.Support_Request__c.accessible}" / >
+
+<!-- all Sections -->  
+<DIV class="pbSubsection">
+<apex:pageblocksection title="Account Comments" id="section1" columns="2">
+ <script>twistSection(document.getElementById("{!$Component.section1}").childNodes[0].childNodes[0]); </script>
+  <apex:pageblocksectionitem />
+<apex:outputfield value="{!account.Description}"/>
+<apex:outputfield value="{!account.KeyCustomers__c}"/>
+<apex:outputfield value="{!account.KeyCompetitors__c}"/>
+</apex:pageblocksection>
+</DIV>
+
+<!-- New SEction -->
+<DIV  class="pbSubsection">
+   <apex:pageblocksection title="Account Details" id="section2" columns="2">
+ <script>twistSection(document.getElementById("{!$Component.section2}").childNodes[0].childNodes[0]); </script>
+ <apex:pageblocksectionitem />
+                    <apex:outputfield value="{!Account.ShippingCompany__c}"/>
+                    <apex:outputfield value="{!Account.ShippingAccountNumber__c}"/>
+                    <apex:outputfield value="{!Account.BuyingBehavior__c}"/>
+                    <apex:outputfield value="{!Account.ProfitabilitySegment__c}"/>
+                    <apex:outputfield value="{!Account.MarketingSegment__c}"/>
+                    <apex:outputfield value="{!Account.Latitude__c}"/>
+                    <apex:outputfield value="{!Account.Longitude__c}"/>
+    </apex:pageblockSection>
+</DIV>
+</apex:pageBlock>
+        
+      </apex:tab>
+      
+      <apex:tab label="Account History" name="History" id="tabHist">
+        <apex:pageBlock id="thePageBlock" title="{!Account.name}">
+ 
+
+   <apex:dataTable value="{!histories}" var="h" columns="5" width="100%" cellpadding="5" border=".5">
+        <apex:column headerValue="Date"  value="{!h.thedate}"/>
+        <apex:column headerValue="User" value="{!h.who}"/> 
+        <apex:column headerValue="Field" >
+        
+
+        <apex:outputLabel value="{!h.fieldLabel}"/>
+         </apex:column>
+        <apex:column headerValue="From" value="{!h.fromValue}"/>   
+        <apex:column headerValue="To" value="{!h.toValue}"/>         
+     </apex:dataTable>
+        </apex:pageBlock>
+      </apex:tab>
+     
+       <apex:tab label="Account Team" name="AccountTeam" id="tabTeam" >
+          <apex:relatedList subject="{!account}" list="AccountTeamMembers" id="AccountTeamRelatedList" rendered="{!$ObjectType.AccountTeamMember.accessible}" />
+       </apex:tab>
+       
+       <apex:tab label="Coaching Worksheets" name="tabCW" id="tabCW">
+         <apex:relatedList subject="{!account}" list="Coaching_Worksheets__r" id="CWRelatedList"  rendered="{!$ObjectType.CoachingWorksheet__c.accessible}" />
+       </apex:tab>     
+               
+      <apex:tab label="Contact Roles" name="ContactRoles" id="tabRoles">
+         <apex:relatedList subject="{!account}" list="AccountContactRoles" id="ContactRolesRelatedList" />
+      </apex:tab>      
+                      
+      <apex:tab label="Contracts" name="Contracts" id="tabContracts">
+         <apex:relatedList subject="{!account}" list="Contracts" id="ContractRelatedList" />
+      </apex:tab>
+      
+       <apex:tab label="Email Result Summaries" name="Email Result Summaries" id="tabEmail">
+         <apex:relatedList subject="{!account}" list="EmailResultSummaries__r" id="EmailSummariesRelatedList"  rendered="{!$ObjectType.EmailResultSummary__c.accessible}" />
+      </apex:tab>
+ 
+      <apex:tab label="Sample Requests" name="Sample Requests" id="tabSamples">
+         <apex:relatedList subject="{!account}" list="R00N30000000jjAZEAY__r" id="SampleRequestRelatedList" rendered="{!$ObjectType.SampleRequest__c.accessible}"  />
+      </apex:tab>
+      
+       <apex:tab label="Notes and Attachments" name="Notes and Attachments" id="tabatttachments">
+         <apex:relatedList subject="{!account}" list="NotesAndAttachments" id="NotesAndAttachmentsRelatedList" rendered="{!$ObjectType.NoteAndAttachment.accessible}"  />
+      </apex:tab>
+     
+        
+
+   </apex:tabPanel>
+
+</apex:page>

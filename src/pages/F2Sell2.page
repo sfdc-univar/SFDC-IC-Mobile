@@ -1,0 +1,549 @@
+<apex:page sidebar="false"
+    controller="F2Sell_ReportBuilder2">
+    
+    <style>
+tr.border_bottom td {
+    border-bottom: 1pt solid grey;
+}
+
+tr.summary_row td {
+    border-top: 2px solid black;
+    background-color: #E5F2F6;
+}
+
+td {
+    padding: 5px 5px 5px 5px;
+}
+
+.header {
+    width: 100%;
+    border: 1px solid;
+    background-color: #1797C0;
+    color: white;
+}
+
+.header th:first-child {
+    text-align: left;  
+}
+
+.header th {
+    text-align: right;
+    padding: 5px 5px 5px 5px;
+    height: 25px;
+}
+
+table {
+    width: 100%;
+    border: .5px solid black;
+    //white-space: nowrap;
+}
+
+.currentweek {
+    background-color: #E5F2F6;
+}
+</style>
+<script type="text/javascript">
+    function refreshPage(selectedRoleId) {
+        //hide the summary rows
+        document.getElementById("oppCountSummaryRow").style.display = 'none';
+        document.getElementById("oppDollarsSummaryRow").style.display = 'none';
+        document.getElementById("oppCountWonSummaryRow").style.display = 'none';
+        document.getElementById("oppCountWonDollarSummaryRow").style.display = 'none';
+        document.getElementById("cppCountSummaryRow").style.display = 'none';
+        document.getElementById("cppLbsSummaryRow").style.display = 'none';
+        document.getElementById("callSummaryRow").style.display = 'none';
+        document.getElementById("targetCallSummaryRow").style.display = 'none';
+        
+        //show the Loading row
+        document.getElementById("summaryLoading").style.display = '';
+        
+        //call the first actionFunction to redraw the individual components,
+        //each report is chained to the first call table
+        refreshCalls(selectedRoleId);
+        
+        //this is not dependent on other functions
+        refreshAccountPrioritizationData(selectedRoleId);
+    }
+    
+    function onDistrictSummaryComplete() {
+        //hide the Loading row
+        document.getElementById("summaryLoading").style.display = 'none';
+    }
+</script>
+<apex:form >
+<apex:pageMessages id="msgs"/>
+    <div style="position: relative; left: 75px; width: 90%">
+        <br /> <br /> <br />
+        <apex:outputPanel id="roleHierarchy" style="white-space:normal">
+            <h1 class="topPage">
+                <span style="font-size:200%">Freedom 2 Sell</span> 
+                <br />
+                <span style="color:red">All entries must be entered by Saturday into SFDC by 12PM PST, 2PM CST, 3PM EST in order for them to appear on the dashboard.</span> 
+                <br /><br />
+                   <apex:outputLink value="/00Oa0000007cnES" id="forward">F2S Calls (CW thru CW+3)</apex:outputLink><br/><br/>
+                <apex:outputPanel rendered="{!bRenderHyperLinks == true}">
+                    Currently viewing reports as:&nbsp;&nbsp;&nbsp;<br/> 
+                    <apex:outputPanel rendered="{!parentRole!=NULL}">
+                        <apex:commandLink onclick="refreshPage('{!parentRoleId}'); return false;" value="{!parentRole.Name}">  
+                        </apex:commandLink> &gt;&nbsp;
+                    </apex:outputPanel>
+                    <apex:outputText style="width:150px" > 
+                    {!currentRole.Name}&nbsp; <apex:outputText rendered="{!childRoleHierarchy!=NULL}">&gt;</apex:outputText>&nbsp; </apex:outputText>
+                    <apex:repeat value="{!childRoleHierarchy}" var="child">
+                        &nbsp;
+                        <apex:commandLink onclick="refreshPage('{!child.Id}'); return false;" value="{!child.Name}">
+                        </apex:commandLink> 
+                    </apex:repeat>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!bRenderHyperLinks == false}">
+                    Loading...&nbsp;&nbsp;&nbsp;<br/> 
+                </apex:outputPanel>
+            </h1>
+        </apex:outputPanel>
+        <br/>
+        <br/>
+        <apex:outputPanel id="accountPrioritization"
+            style="border:1px solid grey;margin-top:5px;width:60%;"
+            layout="block">
+            <table border="0" cellspacing="0" cellpadding="0">
+                <tr class="header">
+                    <th scope="col" class="headerLabel">Freedom 2 Sell ID</th>
+                    <th scope="col">Estimated Potential ($)</th>
+                    <th scope="col"># Opportunities</th>
+                </tr>
+                <apex:repeat value="{!accountPriorityList}" var="row">
+                    <tr class='border_bottom'>
+                        <td>
+                            <apex:outputPanel rendered="{!row.name='Estimated Potential'}"><b>{!row.name}</b></apex:outputPanel>
+                            <apex:outputPanel rendered="{!row.name!='Estimated Potential'}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!row.name}</apex:outputPanel>
+                        </td>
+                        <td style="text-align:right;"><apex:outputText value="{0, number,###,###,##0}"><apex:param value="{!row.estimatedPotential}" /></apex:outputText></td>
+                        <td style="text-align:right;">{!row.oppCount}</td>
+                    </tr>   
+                </apex:repeat>
+            </table>    
+        </apex:outputPanel>
+        <br />
+        <apex:outputPanel id="districtSummary"
+            style="border:1px solid grey;margin-top:5px;width:60%;"
+            layout="block">
+            <apex:actionStatus id="myDistrictSummaryStatus">
+                <apex:facet name="start">
+                    <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb;
+                           height: 100%;opacity:0.65;width:100%;"> 
+                        <div class="waitingHolder" style="width: 91px;">
+                            <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                            <span class="waitingDescription">Loading...</span>
+                        </div>
+                    </div>
+                </apex:facet>
+            </apex:actionStatus>
+            <table border="0" cellspacing="0" cellpadding="0">
+                <tr class="header">
+                    <th scope="col" class="headerLabel">Summary</th>
+                    <th scope="col">26 Week Avg</th>
+                    <th scope="col">4 Week Avg</th>
+                    <th scope="col">CW-4</th>
+                    <th scope="col">CW-3</th>
+                    <th scope="col">CW-2</th>
+                    <th scope="col">CW-1</th>
+                </tr>
+                <tr id="summaryLoading" style="display:none">
+                    <td colspan="8"><b>Loading Summary...</b></td>
+                </tr>
+               <tr class='border_bottom' id='callSummaryRow'>
+                   <td># of Calls</td>
+                   <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['calls'].weekSummaryMetric26}" /></apex:outputText></td>
+                   <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['calls'].weekSummaryMetric4}" /></apex:outputText></td>
+                   <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['calls'].weekPreviousValue4SummaryMetric}" /></apex:outputText></td>
+                   <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['calls'].weekPreviousValue3SummaryMetric}" /></apex:outputText></td>
+                   <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['calls'].weekPreviousValue2SummaryMetric}" /></apex:outputText></td>
+                   <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['calls'].weekPreviousValue1SummaryMetric}" /></apex:outputText></td>
+                </tr>
+                <tr class='border_bottom' id='targetCallSummaryRow'>
+                   <td>% of Calls to Target Accounts</td>
+                   <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['targetCalls'].weekSummaryMetric26}" /></apex:outputText></td>
+                   <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['targetCalls'].weekSummaryMetric4}" /></apex:outputText></td>
+                   <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['targetCalls'].weekPreviousValue4SummaryMetric}" /></apex:outputText></td>
+                   <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['targetCalls'].weekPreviousValue3SummaryMetric}" /></apex:outputText></td>
+                   <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['targetCalls'].weekPreviousValue2SummaryMetric}" /></apex:outputText></td>
+                   <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['targetCalls'].weekPreviousValue1SummaryMetric}" /></apex:outputText></td>
+                 </tr>
+                <tr class='border_bottom' id='cppLbsSummaryRow'>
+                    <td>CPP Created (lbs)</td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppLbs'].weekSummaryMetric26Total}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppLbs'].weekSummaryMetric4Total}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppLbs'].weekPreviousValue4}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppLbs'].weekPreviousValue3}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppLbs'].weekPreviousValue2}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppLbs'].weekPreviousValue1}" /></apex:outputText></td>
+                </tr>
+                <tr class='border_bottom' id='cppCountSummaryRow'>
+                    <td>CPP Created (#)</td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['cppCounts'].weekSummaryMetric26Total}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['cppCounts'].weekSummaryMetric4Total}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppCounts'].weekPreviousValue4}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppCounts'].weekPreviousValue3}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppCounts'].weekPreviousValue2}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppCounts'].weekPreviousValue1}" /></apex:outputText></td>
+                </tr>
+                <tr class='border_bottom' id='oppDollarsSummaryRow'>
+                    <td>Opportunities Created ($)</td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppDollars'].weekSummaryMetric26Total}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppDollars'].weekSummaryMetric4Total}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppDollars'].weekPreviousValue4}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppDollars'].weekPreviousValue3}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppDollars'].weekPreviousValue2}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppDollars'].weekPreviousValue1}" /></apex:outputText></td>
+                </tr>
+                <tr class='border_bottom' id='oppCountSummaryRow'>
+                    <td>Opportunities Created (#)</td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['oppCounts'].weekSummaryMetric26Total}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['oppCounts'].weekSummaryMetric4Total}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppCounts'].weekPreviousValue4}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppCounts'].weekPreviousValue3}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppCounts'].weekPreviousValue2}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppCounts'].weekPreviousValue1}" /></apex:outputText></td>
+                </tr>
+                <tr class='border_bottom' id='oppCountWonDollarSummaryRow'>
+                    <td>Opportunities Closed-Won ($)</td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWonDollars'].weekSummaryMetric26Total}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWonDollars'].weekSummaryMetric4Total}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWonDollars'].weekPreviousValue4}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWonDollars'].weekPreviousValue3}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWonDollars'].weekPreviousValue2}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWonDollars'].weekPreviousValue1}" /></apex:outputText></td>
+                </tr>
+                <tr class='border_bottom' id='oppCountWonSummaryRow'>
+                    <td>Opportunities Closed-Won (#)</td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['oppsWon'].weekSummaryMetric26Total}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['oppsWon'].weekSummaryMetric4Total}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWon'].weekPreviousValue4}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWon'].weekPreviousValue3}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWon'].weekPreviousValue2}" /></apex:outputText></td>
+                    <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWon'].weekPreviousValue1}" /></apex:outputText></td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <br /><br /> 
+        
+        <apex:outputPanel id="callResults"
+            style="border:1px solid grey;margin-top:5px;width:60%;"
+            layout="block">
+            <apex:actionStatus id="myCallStatus">
+                <apex:facet name="start">
+                    <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb;
+                           height: 100%;opacity:0.65;width:100%;"> 
+                        <div class="waitingHolder" style="width: 91px;">
+                            <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                            <span class="waitingDescription">Loading...</span>
+                        </div>
+                    </div>
+                </apex:facet>
+            </apex:actionStatus>
+            <table border="0" cellspacing="0" cellpadding="0">
+
+                <tr class="header">
+                    <th scope="col" class="headerLabel"># of Calls</th>
+                    <th scope="col">26 Week Avg</th>
+                    <th scope="col">4 Week Avg</th>
+                    <th scope="col">CW-4</th>
+                    <th scope="col">CW-3</th>
+                    <th scope="col">CW-2</th>
+                    <th scope="col">CW-1</th>
+                </tr>
+               <apex:repeat value="{!filteredCallsDataList}" var="rdr">
+                    <tr class='border_bottom'>
+                        <td>{!rdr.userName}</td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!rdr.weekSummaryMetric26}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!rdr.weekSummaryMetric4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue3}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue2}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue1}" /></apex:outputText></td>
+                     </tr>
+                </apex:repeat>
+                <tr class='summary_row'>
+                        <td>Average</td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['calls'].weekSummaryMetric26}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['calls'].weekSummaryMetric4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['calls'].weekPreviousValue4SummaryMetric}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['calls'].weekPreviousValue3SummaryMetric}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['calls'].weekPreviousValue2SummaryMetric}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['calls'].weekPreviousValue1SummaryMetric}" /></apex:outputText></td>
+                 </tr>
+            </table>
+        </apex:outputPanel>
+        <br /><br />
+        <apex:outputPanel id="cppLbsResults"
+            style="border:1px solid grey;margin-top:5px;width:60%;"
+            layout="block">
+            <apex:actionStatus startText="Loading Data..." stopText="" id="myCppLbsStatus" />
+            <table border="0" cellspacing="0" cellpadding="0">
+                <tr class="header">
+                    <th scope="col">CPP Created (lbs)</th>
+                    <th scope="col">26 Week Avg</th>
+                    <th scope="col">4 Week Avg</th>
+                    <th scope="col">CW-4</th>
+                    <th scope="col">CW-3</th>
+                    <th scope="col">CW-2</th>
+                    <th scope="col">CW-1</th>
+                 </tr>
+                <apex:repeat value="{!filteredCppLbsDataList}" var="rdr">
+                    <tr class='border_bottom'>
+                        <td>{!rdr.userName}</td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekSummaryMetric26}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekSummaryMetric4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue3}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue2}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue1}" /></apex:outputText></td>
+                    </tr>
+                </apex:repeat>
+                <tr class='summary_row'>
+                        <td>Total</td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppLbs'].weekSummaryMetric26Total}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppLbs'].weekSummaryMetric4Total}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppLbs'].weekPreviousValue4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppLbs'].weekPreviousValue3}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppLbs'].weekPreviousValue2}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppLbs'].weekPreviousValue1}" /></apex:outputText></td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <br /><br />
+        <apex:outputPanel id="cppCountResults"
+            style="border:1px solid grey;margin-top:5px;width:60%;"
+            layout="block">
+            <apex:actionStatus startText="Loading Data..." stopText="" id="myCppCountStatus" />
+            <table border="0" cellspacing="0" cellpadding="0">
+               <tr class="header">
+                    <th scope="col"># of CPPs</th>
+                    <th scope="col">26 Week Avg</th>
+                    <th scope="col">4 Week Avg</th>
+                    <th scope="col">CW-4</th>
+                    <th scope="col">CW-3</th>
+                    <th scope="col">CW-2</th>
+                    <th scope="col">CW-1</th>
+                </tr>
+                <apex:repeat value="{!filteredCppDataList}" var="rdr">
+                    <tr class='border_bottom'>
+                        <td>{!rdr.userName}</td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!rdr.weekSummaryMetric26}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!rdr.weekSummaryMetric4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue3}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue2}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue1}" /></apex:outputText></td>
+                    </tr>
+                </apex:repeat>
+                <tr class='summary_row'>
+                        <td>Total</td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['cppCounts'].weekSummaryMetric26Total}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['cppCounts'].weekSummaryMetric4Total}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppCounts'].weekPreviousValue4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppCounts'].weekPreviousValue3}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppCounts'].weekPreviousValue2}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['cppCounts'].weekPreviousValue1}" /></apex:outputText></td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <br /><br />
+        <apex:outputPanel id="oppDollarResults"
+            style="border:1px solid grey;margin-top:5px;width:60%;"
+            layout="block">
+            <apex:actionStatus startText="Loading Data..." stopText="" id="myOppDollarStatus" />
+            <table border="0" cellspacing="0" cellpadding="0">
+
+                <tr class="header">
+                    <th scope="col">Opportunities Created ($)</th>
+                    <th scope="col">26 Week Avg</th>
+                    <th scope="col">4 Week Avg</th>
+                    <th scope="col">CW-4</th>
+                    <th scope="col">CW-3</th>
+                    <th scope="col">CW-2</th>
+                    <th scope="col">CW-1</th>
+                </tr>
+               <apex:repeat value="{!filteredOppDollarDataList}" var="rdr">
+                    <tr class='border_bottom'>
+                        <td>{!rdr.userName}</td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekSummaryMetric26}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekSummaryMetric4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue3}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue2}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue1}" /></apex:outputText></td>
+                    </tr>
+                </apex:repeat>
+                <tr class='summary_row'>
+                        <td>Total</td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppDollars'].weekSummaryMetric26Total}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppDollars'].weekSummaryMetric4Total}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppDollars'].weekPreviousValue4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppDollars'].weekPreviousValue3}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppDollars'].weekPreviousValue2}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppDollars'].weekPreviousValue1}" /></apex:outputText></td>
+                  </tr>
+            </table>
+        </apex:outputPanel>
+        <br /><br />
+        <apex:outputPanel id="oppCountResults"
+            style="border:1px solid grey;margin-top:5px;width:60%;"
+            layout="block">
+            <apex:actionStatus startText="Loading Data..." stopText="" id="myOppCountStatus" />
+            <table border="0" cellspacing="0" cellpadding="0">
+               <tr class="header">
+                    <th scope="col"># of Opportunities</th>
+                    <th scope="col">26 Week Avg</th>
+                    <th scope="col">4 Week Avg</th>
+                    <th scope="col">CW-4</th>
+                    <th scope="col">CW-3</th>
+                    <th scope="col">CW-2</th>
+                    <th scope="col">CW-1</th>
+                </tr>
+                <apex:repeat value="{!filteredOppsDataList}" var="rdr">
+                    <tr class='border_bottom'>
+                        <td>{!rdr.userName}</td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!rdr.weekSummaryMetric26}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!rdr.weekSummaryMetric4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue3}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue2}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue1}" /></apex:outputText></td>
+                    </tr>
+                </apex:repeat>
+                <tr class='summary_row'>
+                        <td>Total</td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['oppCounts'].weekSummaryMetric26Total}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['oppCounts'].weekSummaryMetric4Total}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppCounts'].weekPreviousValue4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppCounts'].weekPreviousValue3}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppCounts'].weekPreviousValue2}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppCounts'].weekPreviousValue1}" /></apex:outputText></td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <br /><br />
+        <apex:outputPanel id="oppsWonDollarResults"
+            style="border:1px solid grey;margin-top:5px;width:60%;"
+            layout="block">
+            <apex:actionStatus startText="Loading Data..." stopText="" id="myOppDollarsCountStatus" />
+            <table border="0" cellspacing="0" cellpadding="0">
+               <tr class="header">
+                    <th scope="col">Opportunities Closed-Won ($)</th>
+                    <th scope="col">26 Week Avg</th>
+                    <th scope="col">4 Week Avg</th>
+                    <th scope="col">CW-4</th>
+                    <th scope="col">CW-3</th>
+                    <th scope="col">CW-2</th>
+                    <th scope="col">CW-1</th>
+                </tr>
+                <apex:repeat value="{!filteredOppClosedWonDollarList}" var="rdr">
+                    <tr class='border_bottom'>
+                        <td>{!rdr.userName}</td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekSummaryMetric26}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekSummaryMetric4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue3}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue2}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue1}" /></apex:outputText></td>
+                    </tr>
+                </apex:repeat>
+                <tr class='summary_row'>
+                        <td>Total</td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWonDollars'].weekSummaryMetric26Total}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWonDollars'].weekSummaryMetric4Total}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWonDollars'].weekPreviousValue4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWonDollars'].weekPreviousValue3}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWonDollars'].weekPreviousValue2}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWonDollars'].weekPreviousValue1}" /></apex:outputText></td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <br /><br />
+        <apex:outputPanel id="oppsWonCountResults"
+            style="border:1px solid grey;margin-top:5px;width:60%;"
+            layout="block">
+            <apex:actionStatus startText="Loading Data..." stopText="" id="myOppWonCountStatus" />
+            <table border="0" cellspacing="0" cellpadding="0">
+               <tr class="header">
+                    <th scope="col"># of Opportunities Closed-Won</th>
+                    <th scope="col">26 Week Avg</th>
+                    <th scope="col">4 Week Avg</th>
+                    <th scope="col">CW-4</th>
+                    <th scope="col">CW-3</th>
+                    <th scope="col">CW-2</th>
+                    <th scope="col">CW-1</th>
+                </tr>
+                <apex:repeat value="{!filteredOppClosedWonList}" var="rdr">
+                    <tr class='border_bottom'>
+                        <td>{!rdr.userName}</td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!rdr.weekSummaryMetric26}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!rdr.weekSummaryMetric4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue3}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue2}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!rdr.weekPreviousValue1}" /></apex:outputText></td>
+                    </tr>
+                </apex:repeat>
+                <tr class='summary_row'>
+                        <td>Total</td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['oppsWon'].weekSummaryMetric26Total}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0.0}"><apex:param value="{!summaryRowMap['oppsWon'].weekSummaryMetric4Total}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWon'].weekPreviousValue4}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWon'].weekPreviousValue3}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWon'].weekPreviousValue2}" /></apex:outputText></td>
+                        <td><apex:outputText style="float:right;" value="{0, number,###,###,##0}"><apex:param value="{!summaryRowMap['oppsWon'].weekPreviousValue1}" /></apex:outputText></td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+    </div>
+    </apex:form>
+    <apex:form >
+        <apex:actionFunction name="refreshCalls" action="{!refreshCallData}" oncomplete="refreshCppLbs('{!selectedRoleId}')" rerender="callResults, roleHierarchy, msgs" status="myCallStatus">
+            <apex:param name="selectedRoleId" assignTo="{!selectedRoleId}" value="" />
+        </apex:actionFunction>
+    </apex:form>
+     <apex:form >
+        <apex:actionFunction name="refreshCppLbs" action="{!refreshCppLbsData}" oncomplete="refreshCppCount('{!selectedRoleId}')" rerender="cppLbsResults, roleHierarchy, msgs" status="myCppLbsStatus">
+            <apex:param name="selectedRoleId" assignTo="{!selectedRoleId}" value="" />
+        </apex:actionFunction>
+    </apex:form>
+     <apex:form >
+        <apex:actionFunction name="refreshCppCount" action="{!refreshCppCountData}" oncomplete="refreshOppDollars('{!selectedRoleId}')" rerender="cppCountResults, roleHierarchy, msgs" status="myCppCountStatus">
+            <apex:param name="selectedRoleId" assignTo="{!selectedRoleId}" value="" />
+        </apex:actionFunction>
+    </apex:form>
+     <apex:form >
+        <apex:actionFunction name="refreshOppDollars" action="{!refreshOpportunityDollarData}" oncomplete="refreshOppCount('{!selectedRoleId}')" rerender="oppDollarResults, roleHierarchy, msgs" status="myOppDollarStatus">
+            <apex:param name="selectedRoleId" assignTo="{!selectedRoleId}" value="" />
+        </apex:actionFunction>
+    </apex:form>
+     <apex:form >
+        <apex:actionFunction name="refreshOppCount" action="{!refreshOpportunityCountData}" oncomplete="refreshOppCountWonDollar('{!selectedRoleId}')" rerender="oppCountResults, roleHierarchy, msgs" status="myOppCountStatus">
+            <apex:param name="selectedRoleId" assignTo="{!selectedRoleId}" value="" />
+        </apex:actionFunction>
+    </apex:form>
+    <apex:form >
+        <apex:actionFunction name="refreshOppCountWonDollar" action="{!refreshOppsClosesWonDollarData}" oncomplete="refreshOppCountWon('{!selectedRoleId}')" rerender="oppsWonDollarResults, roleHierarchy, msgs" status="myOppDollarsCountStatus">
+            <apex:param name="selectedRoleId" assignTo="{!selectedRoleId}" value="" />
+        </apex:actionFunction>
+    </apex:form>
+    <apex:form >
+        <apex:actionFunction name="refreshOppCountWon" action="{!refreshOppsClosedWonData}" oncomplete="refreshDistrictSummary()" rerender="oppsWonCountResults, roleHierarchy, msgs" status="myOppWonCountStatus">
+            <apex:param name="selectedRoleId" assignTo="{!selectedRoleId}" value="" />
+        </apex:actionFunction>
+    </apex:form>
+    <apex:form >
+        <apex:actionFunction name="refreshDistrictSummary" action="{!refreshDistrictSummary}" oncomplete="onDistrictSummaryComplete()" rerender="districtSummary, roleHierarchy" status="myDistrictSummaryStatus">
+        </apex:actionFunction>
+    </apex:form>
+    <apex:form >
+        <apex:actionFunction name="refreshAccountPrioritizationData" action="{!refreshAccountPrioritizationData}" rerender="accountPrioritization">
+            <apex:param name="selectedRoleId" assignTo="{!selectedRoleId}" value="" />
+        </apex:actionFunction>
+    </apex:form>
+    <script type="text/javascript">
+        refreshPage('{!currentRoleId}');
+    </script>
+</apex:page>

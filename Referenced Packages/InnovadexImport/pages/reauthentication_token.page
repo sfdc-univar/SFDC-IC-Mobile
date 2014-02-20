@@ -1,0 +1,64 @@
+<apex:page Controller="InnovadexData1.ReAuthenticateController" id="authetication"  tabStyle="Import_Document_Activity__tab">  
+ 
+    <p align = "center">
+       <!-- <c:NavigatePage CSSDescription_Step1="color:red; font-size:20px" CSSDescription_Step2="font-size:20px" CSSDescription_Step3="font-size:20px"/>-->
+    </p>
+    <apex:image value="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Orange_200.jpg')}"/>                 
+    <script>
+        function isValid(){            
+            var inputToken = document.getElementById('authetication:theForm:theBlock:inputToken');
+            var lblErrorMSG = document.getElementById('authetication:theForm:theBlock:errorMSG');
+            if(inputToken !=null)
+            {
+                var token = inputToken.value;
+                if(token == '')
+                {
+                    alert('{!$Label.innovadexdata1__LBL_TOKEN_EMPTYERROR_MSG}');  
+                    lblErrorMSG.innerHTML = '';
+                    inputToken.focus();                    
+                    return false;
+                }
+                else 
+                {                  
+                    return true;
+                }
+            }
+            return false;
+        }       
+    </script>     
+    <apex:form id="theForm">
+        <apex:pageBlock title="{!$Label.innovadexdata1__LBL_STEP1_PAGE_TITLE}" id="theBlock">         
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                    <td colspan="3">
+                        <p>
+                            <apex:outputText value="{!$Label.innovadexdata1__LBL_REACTIVE_TOKEN}" escape="false"></apex:outputText>
+                        </p>
+                    </td>
+                </tr>
+                <tr align="center">
+                   <td width="10%">&nbsp;</td>
+                    <td valign="middle">                        
+                        <br />
+                        <apex:outputText value="{!$Label.innovadexdata1__LBL_STEP1_TOKEN_INPUT}"></apex:outputText> 
+                        <br />
+                        <apex:inputText id="inputToken" size="60" value="{!keyAPI}" />                     
+                                                                           
+                    </td>                    
+                    <td width="10%">&nbsp;</td>
+                </tr> 
+                 <tr valign="middle" align="center">
+                    <td colspan="3"><apex:outputLabel value="{!ErrorMessage}" style="color:red" id="errorMSG"/></td>
+                </tr>   
+                <tr valign="middle" align="right">
+                    <td colspan="3">
+                    <apex:commandButton value="{!$Label.innovadexdata1__BTN_BACK}" action="{!back}"/> 
+                    <apex:commandButton value="{!$Label.innovadexdata1__BTN_SAVE}" action="{!saveSetting}" onclick="return isValid();"/>
+                    </td>
+                </tr>
+                   
+                                          
+            </table>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

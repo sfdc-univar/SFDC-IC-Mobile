@@ -1,0 +1,167 @@
+<apex:page cache="false" standardcontroller="Customer_Account_Plan__c" tabStyle="Account" sidebar="false"  showHeader="false" extensions="capContactList">
+   <script src="/soap/ajax/20.0/connection.js"></script>
+    <apex:sectionheader id="detail" printURL="/apex/CustomerAccountPlanView?id={!Customer_Account_Plan__c.Id}" title="{!$ObjectType.Customer_Account_Plan__c.label} Detail" subtitle="{!Customer_Account_Plan__c.name}">
+     </apex:sectionheader>
+    <apex:form id="capForm">
+       <apex:pageblock mode="maindetail">
+
+            <apex:pageblockbuttons location="top" >
+      
+                 <apex:commandbutton value="Edit" action="{!Edit}"/>
+                 <apex:commandbutton value="Manager Review" action="{!review}" rendered="{!isSalesManager}" />
+            
+                <!-- *************** Uncomment as needed LAYOUT PAGE :: http://WWW.CLERISOFT.COM (2008-2012) *************** -->
+                    <!-- <apex:commandbutton value="Include Offline" action="{!URLFOR($Action.Customer_Account_Plan__c.IncludeOffline,Customer_Account_Plan__c.id)}"/> -->
+                    <!-- <apex:commandbutton value="Clone" action="{!URLFOR($Action.Customer_Account_Plan__c.Clone,Customer_Account_Plan__c.id)}"/> -->
+                    <!-- <apex:commandbutton value="Convert" action="{!URLFOR($Action.Customer_Account_Plan__c.Convert,Customer_Account_Plan__c.id)}"/> -->
+                    <!-- <apex:commandbutton value="Find Duplicates" action="{!URLFOR($Action.Customer_Account_Plan__c.FindDup,Customer_Account_Plan__c.id)}"/> -->
+                    <!-- <apex:commandbutton value="Request Update" action="{!URLFOR($Action.Customer_Account_Plan__c.RequestUpdate,Customer_Account_Plan__c.id)}"/> -->
+                    <!-- <apex:commandbutton value="Advanced Setup" action="{!URLFOR($Action.Customer_Account_Plan__c.AdvancedSetup,Customer_Account_Plan__c.id)}"/> -->
+                    <!-- <apex:commandbutton value="Manage Members" action="{!URLFOR($Action.Customer_Account_Plan__c.ManageMembers,Customer_Account_Plan__c.id)}"/> -->
+                    <!-- <apex:commandbutton value="Close Case" action="{!URLFOR($Action.Customer_Account_Plan__c.CloseCase,Customer_Account_Plan__c.id)}"/> -->
+                <!-- *************** Uncomment as needed LAYOUT PAGE :: http://WWW.CLERISOFT.COM (2008-2012) *************** -->
+            </apex:pageblockbuttons>
+            <br/>
+
+            <div id="readiness" style="right:50px;border:1px dotted blue">
+            <apex:pageblockSection showHeader="false" collapsible="false" columns="3">
+
+            <apex:outputPanel ><h2>Readiness Signal</h2><br/>
+            <apex:image value="/resource/greenlight" rendered="{!IF(Customer_Account_Plan__c.Net_Readiness_Score__c > 50,true,false)}"/>
+            <apex:image value="/resource/yellowlight" rendered="{!IF(Customer_Account_Plan__c.Net_Readiness_Score__c < 50 && 
+                     Customer_Account_Plan__c.Net_Readiness_Score__c > -50,true,false)}"/>
+            <apex:image value="/resource/redlight" rendered="{!IF(Customer_Account_Plan__c.Net_Readiness_Score__c < -50 ,true,false)}"/>
+           <br/> </apex:outputPanel>
+            
+            <apex:outputPanel ><h2>Readiness Score</h2><br/>
+           <apex:outputfield value="{!Customer_Account_Plan__c.Net_Readiness_Score__c}" style="font-style:bold;"/>
+           </apex:outputPanel>
+           
+           <apex:outputPanel ><h2>Readiness Description</h2><br/>
+           <apex:outputText label="Readiness Description" style="font-style:bold;" value="Pursue with full resources" 
+                    rendered="{!IF(Customer_Account_Plan__c.Net_Readiness_Score__c > 50,true,false)}"/>
+               
+           <apex:outputText label="Readiness Description"  style="font-style:bold;" value="Pursue with Limited resources"
+                      rendered="{!IF(Customer_Account_Plan__c.Net_Readiness_Score__c < 50 && 
+                     Customer_Account_Plan__c.Net_Readiness_Score__c > -50,true,false)}" />
+                                               
+           <apex:outputText label="Readiness Description"  style="font-style:bold;" value="Do not pursue opportunity" 
+                      rendered="{!IF(Customer_Account_Plan__c.Net_Readiness_Score__c < -50 ,true,false)}"/>      
+            </apex:outputPanel>
+          
+            </apex:pageblockSection>         
+             </div> 
+            <!-- ********** Output Panel for Record Type : Master **********  -->
+            <apex:outputpanel >
+            
+                <apex:pageblocksection title="Information" showheader="false" collapsible="false" columns="2">
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Name}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Owner_Name__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Account__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.SMLink__c}" rendered="{!IF(Customer_Account_Plan__c.SMLink__c <> null,true,false)}"/> 
+                    <apex:outputfield value="{!Customer_Account_Plan__c.SMName__c}" rendered="{!IF(Customer_Account_Plan__c.SMLink__c = null,true,false)}"/> 
+                    <apex:outputfield value="{!Customer_Account_Plan__c.TTM_Sales__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Manager_Review__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Annual_Chemical_Spend__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Last_Updated__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Share_of_Wallet__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Segment__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Total_Open_Opportunities__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.TTM_Closed_Won_Closed_Lost_Ratio__c}"/>
+                    
+                   
+                    <apex:outputfield value="{!Customer_Account_Plan__c.TTM_Closed_Won_Opportunities__c}"/>
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Last Modified By"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Customer_Account_Plan__c.LastModifiedById}"/>&nbsp;
+                            <apex:outputfield value="{!Customer_Account_Plan__c.LastModifiedDate}"/>&nbsp;
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                    <apex:pageblocksectionitem >
+                        <apex:outputlabel value="Created By"/>
+                        <apex:outputpanel >
+                            <apex:outputfield value="{!Customer_Account_Plan__c.CreatedById}"/>&nbsp;
+                            <apex:outputfield value="{!Customer_Account_Plan__c.CreatedDate}"/>&nbsp;
+                        </apex:outputpanel>
+                    </apex:pageblocksectionitem>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Section 1: Current status and Shaping or Re-Shaping Customer Demand" showheader="true" collapsible="true" columns="2">
+                    <apex:outputfield value="{!Customer_Account_Plan__c.What_changes_are_happening__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Perceived_Univar_Strengths__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.How_might_this_impact_the_customer__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Perceived_Univar_Weaknesses__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Level_of_Partnership__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Is_the_customer_aware_of_these_changes__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Main_Competitor__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Does_the_customer_have_solutions__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Is_the_competition_entrenched__c}"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Section 2: Key Stakeholders" showheader="true" collapsible="true" columns="2">
+                   <apex:pageBlockTable value="{!accountContacts}" var="ac" style="width:800px;" rendered="{!accountContacts.size>0}">
+           
+            <apex:column headervalue="Contact Name" style="width:200px;">
+                    <apex:outputLink value="/{!ac.Id}" target="_new" >{!ac.FirstName} {!ac.LastName}</apex:outputLink> 
+                    </apex:column>
+            <apex:column headervalue="Contact Title" style="width:200px;">
+            <apex:outputField value="{!ac.Title}"/>
+            </apex:column>
+            
+            <apex:column headervalue="Stakeholder Profile" width="200px;">
+                   <apex:outputField value="{!ac.Stakeholder_Profile__c}"/>
+                   </apex:column>
+                   
+            <apex:column headervalue="Economic Outcome" width="200px;">     
+                   <apex:outputField value="{!ac.Economic_Outcome__c}"/> 
+                    </apex:column>
+            <apex:column headervalue="Demand Driver" width="200px;">    
+                   <apex:outputField value="{!ac.Demand_Driver__c}"/>
+                 </apex:column>
+         <apex:param id="conId" value="{!ac.Id}"/>     
+            </apex:pageBlockTable>
+            
+            <apex:outputText value="No Contacts for this account" style="width:800px;" rendered="{!accountContacts.size=0}"/>
+            
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Section 3: Opportunity Qualification Scorecard" showheader="true" collapsible="true" columns="2">
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Significant_current_or_potential_spend__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Frequent_sharing_of_best_practices__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Financially_healthy_organization__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Multiple_stakeholders_learning__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Senior_leaders_reach_out_for_ideas__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.External_pressures_to_change__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Improvement_initiatives_as_ongoing__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Internal_pressures_to_change__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Engages_in_constructive_dialogue__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Organization_wide_discontent__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Articulate_differences_current_vs_new__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Current_supplier_falls_short__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Request_continuing_conversations__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Dissatisfaction_with_existing_solutions__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Express_openness_to_escalation__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.General_organizational_needs_unmet__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.Mobilizers_exist__c}"/>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Section 4: Checklists and Templates" showheader="true" collapsible="true" columns="2">
+                	<a href=" https://na13.salesforce.com/sfc/#version?id=069a0000002T4bV" target="_new">Pre-Call Checklist</a>
+                	<apex:pageblocksectionitem />
+                	<a href=" https://na13.salesforce.com/sfc/#version?selectedDocumentId=069a0000003LhLw" target="_new">Strategic Account Template</a>
+                </apex:pageblocksection>
+                <apex:pageblocksection title="Section 5: Action Plan" showheader="true" collapsible="true" columns="2">
+                    <apex:outputfield value="{!Customer_Account_Plan__c.What_Are_the_3_Biggest_Unknowns__c}"/>
+                    <apex:outputfield value="{!Customer_Account_Plan__c.What_can_I_use_Manager_Input_On__c}"/>
+                </apex:pageblocksection>
+            </apex:outputpanel>
+        </apex:pageblock>
+    </apex:form>
+
+    <!-- ********** Related Lists Output Panel for Record Type : Master **********  -->
+    <apex:outputpanel >
+        <apex:relatedlist list="NotesAndAttachments" title="Notes & Attachments"/>
+        
+ <apex:relatedList list="Customer_Account_Plan_Histories__r" title="Revision History" subject="{!Customer_Account_Plan__c.Id}" id="caprl" pagesize="50">
+ </apex:relatedList>
+
+    </apex:outputpanel>
+   <br/>
+</apex:page>

@@ -1,0 +1,110 @@
+<apex:page controller="InnovadexData1.MappingSettingController" tabStyle="Import_Document_Activity__tab" id="thePage" action="{!NavigateController}">
+    <script>
+        document.onreadystatechange=function(){
+            if(document.readyState=="complete"){
+            autoMapping();
+            }
+        }
+        function autoMapping(){                                 
+            var result = true;
+            var requestSelect = document.getElementById('thePage:thePageBlock:theForm:Request');
+            var usersSelect = document.getElementById('thePage:thePageBlock:theForm:Users');
+            var activitySelect = document.getElementById('thePage:thePageBlock:theForm:Activity');
+            var checkBox = document.getElementById('thePage:thePageBlock:theForm:useDefaultMapping');
+            //alert(requestSelect.value + usersSelect.value + activitySelect.value);
+            var defaultObject = "{!ResultMessage}";
+            //alert(defaultObject); 
+            var requestObject;
+            var userObject;
+            var documentObject;                  
+            if(defaultObject != ''){
+                requestObject = defaultObject.split('&')[0];
+                userObject = defaultObject.split('&')[1];
+                documentObject = defaultObject.split('&')[2];                
+            }
+            if(requestSelect.value != requestObject){
+                result = false;
+            }
+                else if(usersSelect.value != userObject){
+                    result = false;
+                }
+                    else if(activitySelect.value != documentObject){
+                        result = false;
+                    }
+            if(result == false){   
+                checkBox.checked = false;             
+                checkBox.disabled = true;
+            }else{
+                checkBox.disabled = false;
+            }
+            
+        }
+        function changeText(checkBox)
+        {
+            var btnSave= document.getElementById('thePage:thePageBlock:theForm:btnSave');
+            if(!checkBox.checked)
+            {
+                if(btnSave!=null)
+                {
+                    btnSave.value = "Next";
+                }
+            }
+            else
+            {
+                if(btnSave!=null)
+                {
+                    btnSave.value = "Save";
+                }
+            }
+        }
+    </script>
+    <table align="center">
+        <tr>            
+            <td align="center"><c:NavigatePage CSSDescription_Step1="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Step1_low.png')}" CSSDescription_Step2="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Step2_high.png')}" CSSDescription_Step3="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Step3_low.png')}"/></td>
+       </tr>
+    </table>
+    <apex:image value="{!URLFOR($Resource.InnovadexData1__Innovadex,'img/Orange_200.jpg')}"/>       
+    <apex:pageBlock title="{!$Label.innovadexdata1__LBL_STEP2_PAGE_TITLE}" id="thePageBlock">     
+        <apex:form id="theForm">      
+            <table cellspacing="5" cellpadding="0" width="100%" border="0">
+                <tr>
+                    <td nowrap="nowrap" align="right"><apex:outputLabel value="{!$Label.innovadexdata1__LBL_STEP2_SELECT_REQUEST}"/></td>
+                    <td>
+                        <apex:selectList size="1" id="Request" value="{!RequestObjectName}" onchange="autoMapping()">
+                            <apex:selectOptions value="{!ObjectItems}"></apex:selectOptions>
+                        </apex:selectList>
+                    </td>
+                </tr>
+                <tr>
+                    <td nowrap="nowrap" align="right"><apex:outputLabel value="{!$Label.innovadexdata1__LBL_STEP2_SELECT_INNOVADEX_USER}"/></td>
+                    <td>
+                        <apex:selectList size="1" id="Users" value="{!UserObjectName}" onchange="autoMapping()">
+                            <apex:selectOptions value="{!ObjectItems}"></apex:selectOptions>
+                        </apex:selectList></td>
+                </tr>
+                <tr>
+                    <td nowrap="nowrap" align="right"><apex:outputLabel value="{!$Label.innovadexdata1__LBL_STEP2_SELECT_PRODUCT_DETAIL}"/></td>
+                    <td align="left">
+                        <apex:selectList size="1" id="Activity" value="{!DocumentObjectName}" onchange="autoMapping()">
+                            <apex:selectOptions value="{!ObjectItems}"></apex:selectOptions>
+                        </apex:selectList></td>
+                </tr>
+                 <tr valign="middle">
+                    <td colspan="2">
+                   
+                    <apex:inputCheckbox value="{!UseDefaultMapping}" id="useDefaultMapping" selected="{!UseDefaultMapping}" onchange="javascript:changeText(this)"/><label for="thePage:thePageBlock:theForm:useDefaultMapping" >{!$Label.LBL_STEP2_ACCEPT_DEFAULT_MAPPING}</label>
+                    </td>
+                </tr>                
+                <tr align="right">
+                    <td colspan="2">                       
+                        <apex:commandButton value="{!$Label.innovadexdata1__BTN_BACK}" id="btnBack" action="{!backAction}" rendered="{!DisplayNext}"/>
+                        <apex:commandButton value="{!$Label.innovadexdata1__BTN_BACK}" id="btnBackOption" action="{!backOptionPage}" rendered="{!DisplaySave}"/>
+                        <apex:commandButton value="{!$Label.innovadexdata1__BTN_NEXT}" id="btnImport" action="{!nextAction}" rendered="{!DisplayNext}"/>
+                        <apex:commandButton value="{!$Label.innovadexdata1__BTN_SAVE}" id="btnSave" action="{!saveAction}" rendered="{!DisplaySave}"/>                                                   
+                    </td>                    
+                </tr>
+            </table>            
+                    
+        </apex:form>
+    </apex:pageBlock>
+</apex:page>

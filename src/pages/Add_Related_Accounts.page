@@ -1,0 +1,101 @@
+<apex:page standardcontroller="Campaign" extensions="RelatedBidAccounts" title="Add Related Accounts" tabStyle="Campaign" action="{!findAccounts}">
+   <apex:sectionheader subtitle="Add Related Accounts to Bid: {!Campaign.Name}" title="Search Accounts"/>
+  &#171;&nbsp; <apex:outputLink styleClass="ptBreadcrumb" value="/{!Campaign.Id}">Back to Campaign: {!Campaign.Name}</apex:outputLink>
+<script>
+function checkAll(cb)
+{
+   var inputElem = document.getElementsByTagName("input");
+   for(var i=0;i<inputElem.length;i++)
+     {
+             if(inputElem[i].id.indexOf("aid")!=-1)
+                   inputElem[i].checked = cb.checked;
+      }
+}
+
+</script>
+ <apex:outputPanel >
+ <apex:messages />     
+    </apex:outputPanel>
+    <apex:form >
+     <apex:pageBlock mode="edit" id="block">
+             <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                   <apex:panelGroup >
+                      <apex:inputText id="searchText" value="{!searchText}"/>
+                      <apex:commandButton value="Find Accounts" action="{!findAccounts}" status="status"/>
+                       </apex:panelGroup>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+     </apex:pageBlock>
+     <apex:pageBlock >
+       <apex:pageBlockButtons >
+       
+                 <input type="button" class="btn" onClick="javascript:history.go(-1);" value="Cancel" id="cancel1"/>
+                   <apex:commandButton action="{!save}" value="Add Selected Accounts" id="SaveButton"/>
+                   
+        </apex:pageBlockButtons>   
+            <apex:pageBlockSection title="Results" id="results" collapsible="false">
+               <apex:pageBlockTable value="{!results}" var="l" >
+               <apex:column >
+                  <apex:facet name="header">
+                    <apex:inputCheckbox onclick="checkAll(this)"/>
+                </apex:facet>
+                 <apex:inputCheckbox id="aid" value="{!l.isChecked}"/>
+                 </apex:column>
+               
+                   <apex:column headervalue="Account Name" width="250">
+                       <a href="/{!l.account.Id}">{!l.account.Name}</a>
+                   </apex:column>
+       
+                      <apex:column headervalue="{!$ObjectType.Account.fields.ShipToName__c.label}" width="250">
+                        {!l.account.ShipToName__c}
+                      </apex:column>
+    
+                      <apex:column headervalue="Customer Number" width="250">
+                        {!l.account.CustomerNumber__c} -  {!l.account.ShipToNumber__c}
+                      </apex:column>
+                      
+   <!-- //2013-11-11 Country/State Picklists - K Miller - change to use StateCodes -->
+                      <apex:column headervalue="Shipping Address" width="250">
+                        {!l.account.ShippingStreet}<br/>
+                        {!l.account.ShippingCity},
+                        {!l.account.ShippingStateCode}
+                        {!l.account.ShippingPostalCode}<br/>
+                        {!l.account.ShippingCountry}
+                      </apex:column>
+
+                      <apex:column headervalue="Billing Address" width="250">
+                        {!l.account.BillingStreet}<br/>
+                        {!l.account.BillingCity},
+                        {!l.account.BillingStateCode}
+                        {!l.account.BillingPostalCode}<br/>
+                        {!l.account.BillingCountry}
+                      </apex:column>
+                      
+                      <apex:column headervalue="Owner" width="250">
+                        {!l.account.Owner.Name}
+                      </apex:column>
+                      
+                      <apex:column headervalue="Sales Office" width="250">
+                        {!l.account.SalesOfficeName__c}
+                      </apex:column>
+                          
+                      <apex:column headervalue="{!$ObjectType.Account.fields.CustomerStatus__c.label}" width="250">
+                        {!l.account.CustomerStatus__c}
+                      </apex:column>
+                      
+                      <apex:column headervalue="Account Type" width="250">
+                        <apex:outputField value="{!l.account.RecordTypeId}"/>
+                      </apex:column>
+                  
+               </apex:pageBlockTable>
+               
+            </apex:pageBlockSection>
+         </apex:pageBlock>
+          <apex:pageBlock id="hiddenBlock" rendered="false">
+          
+          </apex:pageBlock>
+                
+       </apex:form>
+     
+</apex:page>
